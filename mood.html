@@ -49,14 +49,13 @@
 <body>
   <h1>Mood Tracker ☺ Avril 2025</h1>
   <div class="calendar" id="calendar"></div>
-
-// Protection d'accès
+ 
+  <script>
+    // Protection d'accès
 if (localStorage.getItem("melusine-unlocked") !== "true") {
   window.location.href = "index.html";
 }
 
-  
-  <script>
     const moods = ['\ud83d\ude10', '\ud83d\ude42', '\ud83d\ude1e']; // neutre, content, pas content
     const moodKey = 'mood-tracker-2025-04';
     const stored = JSON.parse(localStorage.getItem(moodKey) || '{}');
