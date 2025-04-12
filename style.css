@@ -1,7 +1,8 @@
 body {
   background: url('assets/icons/pageaccueil.jpg') no-repeat center center fixed;
   background-size: cover;
-  font-family: 'Courier New', monospace;
+  font-family: 'Jackal Holiday';
+  src: url('fonts/JackalHoliday.ttf') format('truetype');
   text-align: center;
   padding: 20px;
   cursor: url('assets/icons/Pacman.cur') 0 0, auto;
@@ -28,7 +29,7 @@ body {
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
-  font-family: 'Courier New', monospace;
+  font-family: 'Jackal Holiday', sans-serif;
   text-align: center;
   padding-top: 50px;
 }
