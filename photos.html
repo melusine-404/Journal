@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <title>Photos</title>
   <link rel="stylesheet" href="style.css">
+  <script>
+  if (localStorage.getItem("melusine-unlocked") !== "true") {
+    window.location.href = "index.html";
+  }
+</script>
+
 </head>
 <body>
   <h1>🌸 Petites photos 🌸</h1>
