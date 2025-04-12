@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon Mood Tracker</title>
+  <style>
+    body {
+      background: #fff8f0;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 40px);
+      gap: 8px;
+      justify-content: center;
+    }
+    .day {
+      width: 40px;
+      height: 40px;
+      border: 1px dashed #aaa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 20px;
+      background: #fff;
+      transition: transform 0.2s;
+    }
+    .day:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Mon Mood Tracker ☺ Avril 2025</h1>
+  <div class="calendar" id="calendar"></div>
+
+  <script>
+    const moods = ['\ud83d\ude10', '\ud83d\ude42', '\ud83d\ude1e']; // neutre, content, pas content
+    const moodKey = 'mood-tracker-2025-04';
+    const stored = JSON.parse(localStorage.getItem(moodKey) || '{}');
+
+    const calendar = document.getElementById('calendar');
+    const daysInApril = 30;
+
+    for (let i = 1; i <= daysInApril; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'day';
+      cell.dataset.day = i;
+      cell.innerText = stored[i] || '';
+
+      cell.addEventListener('click', () => {
+        const current = moods.indexOf(cell.innerText);
+        const next = (current + 1) % moods.length;
+        const mood = moods[next];
+        cell.innerText = mood;
+        stored[i] = mood;
+        localStorage.setItem(moodKey, JSON.stringify(stored));
+      });
+
+      calendar.appendChild(cell);
+    }
+  </script>
+</body>
+</html>
