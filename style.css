@@ -71,3 +71,22 @@ body {
 .circle:hover {
   animation-play-state: paused;
 }
+
+#main-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 4em;
+  font-weight: bold;
+  color: white;
+  margin-top: 100px;
+  text-shadow: 2px 2px 5px #00000066;
+  background-color: rgba(0, 0, 0, 0.4); /* optionnel pour faire ressortir */
+  padding: 20px;
+  border-radius: 20px;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Courier New', monospace;
+}
