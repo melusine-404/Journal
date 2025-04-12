@@ -1,52 +1,36 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.4">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
-  </style>
+  <meta charset="UTF-8" />
+  <title>Mélusine</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<p class="p1">&lt;!DOCTYPE html&gt;</p>
-<p class="p1">&lt;html lang="fr"&gt;</p>
-<p class="p1">&lt;head&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Mélusine&lt;/title&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;link rel="stylesheet" href="style.css" /&gt;</p>
-<p class="p1">&lt;/head&gt;</p>
-<p class="p1">&lt;body&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="password-screen"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h2&gt;Entrez le mot de passe&lt;/h2&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;input type="password" id="password-input" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;button onclick="checkPassword()"&gt;Entrer&lt;/button&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="circle" class="hidden"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;h1&gt;Mélusine&lt;/h1&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="circle"&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/pensées.webp" onclick="loadEntry('pensées')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/àfaire.webp" onclick="loadEntry('àfaire')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/rêves.webp" onclick="loadEntry('rêves')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/journal.webp" onclick="loadEntry('journal')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/films.webp" onclick="loadEntry('films')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/lectures.webp" onclick="loadEntry('lectures')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/photos.webp" onclick="loadEntry('photos')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">      </span>&lt;img src="assets/icons/dessins.webp" onclick="loadEntry('dessins')" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="entry-content"&gt;&lt;/div&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;audio id="cassette" loop autoplay&gt;</p>
-<p class="p1"><span class="Apple-converted-space">    </span>&lt;source src="audio/cassette.mp3" type="audio/mpeg" /&gt;</p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;/audio&gt;</p>
-<p class="p2"><br></p>
-<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="script.js"&gt;&lt;/script&gt;</p>
-<p class="p1">&lt;/body&gt;</p>
-<p class="p1">&lt;/html&gt;</p>
+  <div id="password-screen">
+    <h2>Entrez le mot de passe</h2>
+    <input type="password" id="password-input" />
+    <button onclick="checkPassword()">Entrer</button>
+  </div>
+
+  <div id="circle" class="hidden">
+    <h1>Mélusine</h1>
+    <div class="circle">
+      <img src="assets/icons/pensées.webp" onclick="loadEntry('pensées')" />
+      <img src="assets/icons/àfaire.webp" onclick="loadEntry('àfaire')" />
+      <img src="assets/icons/rêves.webp" onclick="loadEntry('rêves')" />
+      <img src="assets/icons/journal.webp" onclick="loadEntry('journal')" />
+      <img src="assets/icons/films.webp" onclick="loadEntry('films')" />
+      <img src="assets/icons/lectures.webp" onclick="loadEntry('lectures')" />
+      <img src="assets/icons/photos.webp" onclick="loadEntry('photos')" />
+      <img src="assets/icons/dessins.webp" onclick="loadEntry('dessins')" />
+    </div>
+    <div id="entry-content"></div>
+  </div>
+
+  <audio id="cassette" loop autoplay>
+    <source src="audio/cassette.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script src="script.js"></script>
 </body>
 </html>
