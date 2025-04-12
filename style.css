@@ -1,9 +1,9 @@
 body {
-  background: #fef5f5;
+  background: url('assets/icons/pageaccueil.jpg') no-repeat center center fixed;
+  background-size: cover;
   font-family: 'Courier New', monospace;
   text-align: center;
-  margin: 0;
-  padding: 0;
+  padding: 20px;
 }
 
 #password-screen {
