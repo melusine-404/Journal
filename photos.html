@@ -4,15 +4,45 @@
   <meta charset="UTF-8">
   <title>Photos</title>
   <link rel="stylesheet" href="style.css">
-  <script>
-  if (localStorage.getItem("melusine-unlocked") !== "true") {
-    window.location.href = "index.html";
-  }
-</script>
+  <style>
+    body {
+      background: #fffaf4;
+      font-family: 'Courier New', monospace;
+      padding: 30px;
+    }
 
-</head>
-<body>
-  <h1>🌸 Petites photos 🌸</h1>
-  <p>Ici, tu écris ou dessines tes pensées du jour...</p>
-</body>
-</html>
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      color: #333;
+    }
+
+    .gallery {
+      column-count: 3;
+      column-gap: 1em;
+    }
+
+    .gallery img {
+      width: 100%;
+      margin-bottom: 1em;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.03);
+    }
+
+    @media (max-width: 800px) {
+      .gallery {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .gallery {
+        column-count: 1;
+      }
+    }
+  </
