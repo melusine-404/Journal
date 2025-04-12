@@ -72,21 +72,19 @@ body {
   animation-play-state: paused;
 }
 
-#main-title {
+.melusine-title {
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 4em;
-  font-weight: bold;
+  font-size: 5em;
+  font-weight: 800;
   color: white;
-  margin-top: 100px;
-  text-shadow: 2px 2px 5px #00000066;
-  background-color: rgba(0, 0, 0, 0.4); /* optionnel pour faire ressortir */
-  padding: 20px;
-  border-radius: 20px;
-  max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
   font-family: 'Courier New', monospace;
+  margin: 80px auto 40px auto;
+  text-shadow: 2px 2px 0 #ff00aa, 4px 4px 0 #00ccff;
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 20px 40px;
+  border-radius: 20px;
+  width: fit-content;
 }
