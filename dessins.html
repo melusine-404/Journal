@@ -1,3 +1,5 @@
+<div id="site-header"></div>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -74,5 +76,15 @@
       container.appendChild(img);
     });
   </script>
+
+  <script>
+  fetch("header.html")
+    .then(res => res.text())
+    .then(data => {
+      document.getElementById("site-header").innerHTML = data;
+    });
+</script>
+
 </body>
+
 </html>
