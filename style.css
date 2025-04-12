@@ -4,7 +4,7 @@ body {
   font-family: 'Courier New', monospace;
   text-align: center;
   padding: 20px;
-  cursor: url('assets/icons/curseur.png'), auto;
+  cursor: url('assets/icons/curseur.png') 0 0, auto;
 }
 
 }
