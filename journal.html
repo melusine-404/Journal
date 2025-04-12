@@ -2,132 +2,120 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Journal magique</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Charm&display=swap" rel="stylesheet">
-  <style>
-    /* (CSS copié depuis notre réponse précédente) */
-    @import url('https://fonts.googleapis.com/css2?family=Charm&display=swap');
+  <title>Journal</title>
 
+  <!-- POLICE JACKAL HOLIDAY -->
+  <style>
+    @font-face {
+      font-family: 'Jackal Holiday';
+      src: url('fonts/JackalHoliday.ttf') format('truetype');
+    }
+  </style>
+
+  <!-- STYLES -->
+  <style>
     body {
-      background: #fefae0 url('assets/icons/pageaccueil.jpg') no-repeat center center fixed;
-      background-size: cover;
-      background-attachment: fixed;
-      font-family: 'Charm', cursive;
+      background-color: #f0f0f0;
+      font-family: 'Jackal Holiday', cursive;
       padding: 40px;
-      max-width: 800px;
-      margin: auto;
-      color: #3e2c1c;
+      margin: 0;
     }
 
     h1 {
       text-align: center;
       font-size: 3em;
-      color: #4a2c1e;
-      margin-bottom: 30px;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+      color: #222;
+      margin-bottom: 40px;
     }
 
     #journal-form {
-      background: rgba(255, 255, 255, 0.9);
-      padding: 25px;
-      border-radius: 20px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin: auto;
       margin-bottom: 40px;
-      backdrop-filter: blur(2px);
+      max-width: 700px;
     }
 
     textarea {
       width: 100%;
-      height: 160px;
+      height: 150px;
       padding: 12px;
       font-size: 1em;
-      border-radius: 10px;
-      border: 1px solid #bbb;
-      font-family: 'Charm', cursive;
-      background-color: #fffdf6;
-      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-family: 'Jackal Holiday', cursive;
+      color: black;
+      background-color: white;
     }
 
     button {
-      background-color: #3e2c1c;
-      border: none;
-      padding: 10px 24px;
+      background-color: black;
       color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
       font-weight: bold;
-      border-radius: 10px;
-      cursor: pointer;
       font-size: 1em;
-      transition: background 0.3s ease;
+      cursor: pointer;
+      margin-top: 10px;
     }
 
     button:hover {
-      background-color: #6a4e3e;
+      background-color: #333;
+    }
+
+    #entries {
+      column-count: 3;
+      column-gap: 20px;
+      padding-top: 20px;
     }
 
     .entry {
-      background: linear-gradient(145deg, #fff8e6, #e5d8c4);
-      border: 2px solid #c79b6d;
-      border-radius: 12px;
-      margin-bottom: 25px;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .entry.closed .content {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, opacity 0.3s ease;
-    }
-
-    .entry.open .content {
-      max-height: 500px;
-      opacity: 1;
+      break-inside: avoid;
+      background: white;
+      color: black;
+      border-radius: 10px;
       padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
 
     .entry time {
       display: block;
-      background: #c79b6d;
-      color: white;
-      padding: 12px 15px;
-      font-size: 1.1em;
-      font-weight: bold;
-      border-bottom: 1px solid #a67c52;
-      text-align: center;
+      font-size: 0.9em;
+      color: #555;
+      margin-bottom: 10px;
     }
 
-    .content p {
-      margin: 0;
-      padding: 0;
-      line-height: 1.5;
-      font-size: 1em;
-      color: #3e2c1c;
+    /* Responsive */
+    @media (max-width: 1000px) {
+      #entries {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      #entries {
+        column-count: 1;
+      }
     }
   </style>
 </head>
 <body>
 
-  <h1>Journal magique</h1>
+  <h1>Journal</h1>
 
   <div id="journal-form">
-    <textarea id="entry" placeholder="Écris un souvenir, un rêve, un sort..."></textarea>
+    <textarea id="entry" placeholder="Écris quelque chose..."></textarea>
     <button onclick="saveEntry()">Enregistrer</button>
   </div>
 
   <div id="entries"></div>
 
+  <!-- SCRIPT -->
   <script>
-    function toggleEntry(event) {
-      const entry = event.currentTarget;
-      entry.classList.toggle('open');
-      entry.classList.toggle('closed');
-    }
-
     function saveEntry() {
       const text = document.getElementById('entry').value.trim();
       if (text === '') return;
@@ -139,9 +127,9 @@
       });
 
       const entryHTML = `
-        <div class="entry closed" onclick="toggleEntry(event)">
+        <div class="entry">
           <time>${formattedDate}</time>
-          <div class="content"><p>${text.replace(/\n/g, '<br>')}</p></div>
+          <p>${text.replace(/\n/g, '<br>')}</p>
         </div>
       `;
 
@@ -153,22 +141,21 @@
     window.onload = function() {
       const keys = Object.keys(localStorage).sort().reverse();
       keys.forEach(key => {
-        if (!key.includes('T')) return; // ignore les clés non liées aux dates
+        if (!key.includes('T')) return;
         const date = new Date(key);
         const formattedDate = date.toLocaleDateString('fr-FR', {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
         const text = localStorage.getItem(key);
         const entryHTML = `
-          <div class="entry closed" onclick="toggleEntry(event)">
+          <div class="entry">
             <time>${formattedDate}</time>
-            <div class="content"><p>${text.replace(/\n/g, '<br>')}</p></div>
+            <p>${text.replace(/\n/g, '<br>')}</p>
           </div>
         `;
         document.getElementById('entries').insertAdjacentHTML('beforeend', entryHTML);
       });
     }
   </script>
-
 </body>
 </html>
