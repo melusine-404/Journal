@@ -29,6 +29,26 @@ body {
 
 }
 
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: rotate(calc(45deg * var(--i))) translate(180px) rotate(calc(-45deg * var(--i)));
+}
+
+.icon img {
+  width: 60px;
+  height: 60px;
+  transition: transform 0.3s;
+  cursor: pointer;
+}
+
+.icon img:hover {
+  transform: scale(1.2);
+  z-index: 2;
+}
+
+
 .circle img {
   width: 60px;
   height: 60px;
