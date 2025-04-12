@@ -39,7 +39,6 @@ body {
 .circle img:nth-child(7) { top: 50%; left: 0%; transform: translate(0%, -50%); }
 .circle img:nth-child(8) { top: 20%; left: 15%; transform: translate(-50%, -50%); }
 
-}
 
 .circle img:hover {
   transform: scale(1.2);
