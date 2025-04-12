@@ -4,7 +4,6 @@ body {
   font-family: 'Courier New', monospace;
   text-align: center;
   padding: 20px;
-  body {
   cursor: url('assets/icons/curseur.png'), auto;
 }
 
@@ -72,8 +71,3 @@ body {
 .circle:hover {
   animation-play-state: paused;
 }
-
-body {
-  cursor: url('assets/icons/curseur.png') 0 32, auto;
-}
-
