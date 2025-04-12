@@ -25,6 +25,8 @@ body {
   position: relative;
   border-radius: 50%;
   animation: spin 40s linear infinite;
+  transform-style: preserve-3d;
+
 }
 
 .circle img {
@@ -49,7 +51,9 @@ body {
 .circle img:nth-child(8) { transform: rotate(315deg) translate(180px) rotate(-315deg); }
 
 .circle img:hover {
-  transform: scale(1.2);
+  filter: brightness(1.2) saturate(1.5);
+  transform: scale(1.1);
+  z-index: 2;
 }
 
 #entry-content {
