@@ -32,8 +32,9 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: rotate(calc(var(--i) * 40deg)) translate(180px) rotate(calc(var(--i) * -40deg));
+  transform: rotate(calc(var(--i) * 40deg)) translate(200px) rotate(calc(var(--i) * -40deg));
   transform-origin: center;
+   z-index: 1;
 }
 
 .icon span {
@@ -48,8 +49,8 @@ body {
 }
 
 .icon img {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   cursor: pointer;
 }
 
