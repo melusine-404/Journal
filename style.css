@@ -10,8 +10,17 @@ body {
 }
 
 #password-screen {
-  margin-top: 100px;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 400px;
+  margin: 100px auto;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  color: white;
+  font-family: 'Courier New', monospace;
 }
+
 
 .hidden {
   display: none;
