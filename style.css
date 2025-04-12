@@ -4,6 +4,10 @@ body {
   font-family: 'Courier New', monospace;
   text-align: center;
   padding: 20px;
+  body {
+  cursor: url('assets/icons/curseur.png'), auto;
+}
+
 }
 
 #password-screen {
