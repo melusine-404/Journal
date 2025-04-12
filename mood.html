@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mood Tracker - Graphique</title>
+  <title>Mood Tracker - Avril</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -58,7 +58,7 @@
   </style>
 </head>
 <body>
-  <h1>Mood Tracker - Graphique</h1>
+  <h1>Mood Tracker - Avril</h1>
   <div class="calendar" id="calendar"></div>
 
   <div class="chart-container">
@@ -141,6 +141,11 @@
       },
       options: {
         responsive: true,
+        plugins: {
+  legend: {
+    display: false
+  }
+},
         scales: {
           y: {
             min: -1,
