@@ -72,3 +72,8 @@ body {
 .circle:hover {
   animation-play-state: paused;
 }
+
+body {
+  cursor: url('assets/icons/curseur.png') 0 32, auto;
+}
+
