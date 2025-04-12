@@ -15,4 +15,10 @@
   <h1>🌸 Petit journal 🌸</h1>
   <p>Ici, tu écris ou dessines tes pensées du jour...</p>
 </body>
+  <script>
+  if (localStorage.getItem("access_granted") !== "true") {
+    window.location.href = "login.html"; // page d'accès par mot de passe
+  }
+</script>
+
 </html>
