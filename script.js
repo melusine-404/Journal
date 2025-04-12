@@ -1,7 +1,8 @@
 function checkPassword() {
   const input = document.getElementById("password-input").value;
   if (input === "hellodiary") {
-    document.getElementById("password-screen").style.display = "none";
+    localStorage.setItem("melusine-unlocked", "true");
+    document.getElementById("password-screen").classList.add("hidden");
     document.getElementById("circle").classList.remove("hidden");
   } else {
     alert("Mot de passe incorrect");
