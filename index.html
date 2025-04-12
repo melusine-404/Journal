@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mélusine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="password-screen">
+    <h2>Entrez le mot de passe</h2>
+    <input type="password" id="password-input">
+    <button onclick="checkPassword()">Entrer</button>
+  </div>
+
+  <div id="circle" class="hidden">
+    <h1>Mélusine</h1>
+    <div class="circle">
+      <img src="assets/icons/pensées.webp" onclick="loadEntry('pensées')">
+      <img src="assets/icons/àfaire.webp" onclick="loadEntry('àfaire')">
+      <img src="assets/icons/rêves.webp" onclick="loadEntry('rêves')">
+      <img src="assets/icons/journal.webp" onclick="loadEntry('journal')">
+      <img src="assets/icons/films.webp" onclick="loadEntry('films')">
+      <img src="assets/icons/lectures.webp" onclick="loadEntry('lectures')">
+      <img src="assets/icons/photos.webp" onclick="loadEntry('photos')">
+      <img src="assets/icons/dessins.webp" onclick="loadEntry('dessins')">
+    </div>
+    <div id="entry-content"></div>
+  </div>
+
+  <audio id="cassette" loop autoplay>
+    <source src="audio/cassette.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
