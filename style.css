@@ -20,8 +20,8 @@ body {
 
 .circle {
   margin: 0 auto;
-  width: 400px;
-  height: 400px;
+  width: 500px;
+  height: 500px;
   position: relative;
   border-radius: 50%;
   animation: spin 40s linear infinite;
