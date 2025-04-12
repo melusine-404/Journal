@@ -22,81 +22,68 @@ body {
 }
 
 
-.hidden {
-  display: none;
+body {
+  background: #fffaf4;
+  background-image: url('assets/backgrounds/surreal-dali-bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  padding-top: 50px;
 }
 
-#circle {
-  padding-top: 30px;
+.doors-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
 }
 
-.circle {
-  margin: 0 auto;
-  width: 500px;
-  height: 500px;
+.door {
   position: relative;
-  border-radius: 50%;
-  animation: spin 40s linear infinite;
+  width: 150px;
+  height: 250px;
+  cursor: pointer;
+  perspective: 1000px;
+  transition: transform 0.3s ease;
+}
+
+.door:hover {
+  filter: hue-rotate(20deg) contrast(120%) saturate(110%);
+  transform: scale(1.02) rotate(-1deg);
+}
+
+.door-inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 1s ease-in-out;
   transform-style: preserve-3d;
 }
 
-.icon {
+.door.open .door-inner {
+  transform: rotateY(-120deg) scale(1.05) skewY(2deg);
+}
+
+.door-front, .door-back {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: rotate(calc(var(--i) * 40deg)) translate(200px) rotate(calc(var(--i) * -40deg));
-  transform-origin: center;
-   z-index: 1;
-}
-
-.icon span {
-  display: block;
-  transform-origin: center center;
-  transition: transform 0.3s;
-}
-
-.icon span:hover {
-  transform: scale(1.2);
-  z-index: 2;
-}
-
-.icon img {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-}
-
-#entry-content {
-  margin-top: 30px;
-  padding: 10px;
-  white-space: pre-wrap;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.circle:hover {
-  animation-play-state: paused;
-}
-
-.titre-melusine {
-  text-align: center;
-  font-size: 3em;
-  font-weight: normal;
-  font-family: 'Courier New', monospace;
-  color: white;
-  margin-top: 40px;
-}
-
-#sparkleCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-size: cover;
+  background-position: center;
 }
 
+.door-back {
+  transform: rotateY(180deg);
+}
+
+.door-title {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #444;
+  text-shadow: 1px 1px 2px #fffaf4;
+}
