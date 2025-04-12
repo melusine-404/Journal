@@ -15,13 +15,18 @@
     }
     .calendar {
       display: grid;
-      grid-template-columns: repeat(7, 40px);
+      grid-template-columns: repeat(7, 50px);
       gap: 8px;
       justify-content: center;
     }
+    .day-label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+    }
     .day {
-      width: 40px;
-      height: 40px;
+      width: 50px;
+      height: 50px;
       border: 1px dashed #aaa;
       display: flex;
       align-items: center;
@@ -30,9 +35,14 @@
       font-size: 20px;
       background: #fff;
       transition: transform 0.2s;
+      flex-direction: column;
     }
     .day:hover {
       transform: scale(1.1);
+    }
+    .day-number {
+      font-size: 12px;
+      color: #888;
     }
   </style>
 </head>
@@ -48,17 +58,43 @@
     const calendar = document.getElementById('calendar');
     const daysInApril = 30;
 
+    const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+    // Afficher les labels des jours de la semaine
+    for (let d = 0; d < 7; d++) {
+      const label = document.createElement('div');
+      label.className = 'day-label';
+      label.innerText = dayLabels[d];
+      calendar.appendChild(label);
+    }
+
+    // Premier jour d'avril 2025 = mardi (index 1 si lundi = 0)
+    const startDay = 1;
+    for (let empty = 0; empty < startDay; empty++) {
+      const emptyCell = document.createElement('div');
+      calendar.appendChild(emptyCell);
+    }
+
     for (let i = 1; i <= daysInApril; i++) {
       const cell = document.createElement('div');
       cell.className = 'day';
       cell.dataset.day = i;
-      cell.innerText = stored[i] || '';
+
+      const moodSpan = document.createElement('div');
+      moodSpan.innerText = stored[i] || '';
+
+      const number = document.createElement('div');
+      number.className = 'day-number';
+      number.innerText = i;
+
+      cell.appendChild(moodSpan);
+      cell.appendChild(number);
 
       cell.addEventListener('click', () => {
-        const current = moods.indexOf(cell.innerText);
+        const current = moods.indexOf(moodSpan.innerText);
         const next = (current + 1) % moods.length;
         const mood = moods[next];
-        cell.innerText = mood;
+        moodSpan.innerText = mood;
         stored[i] = mood;
         localStorage.setItem(moodKey, JSON.stringify(stored));
       });
