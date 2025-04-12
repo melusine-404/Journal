@@ -13,21 +13,23 @@
   </div>
 
   <div id="circle" class="hidden">
-  <h1>Mélusine</h1>
+    <h1>Mélusine</h1>
 
-  <div class="circle">
-    <img src="assets/icons/pensees.webp" onclick="loadEntry('pensees')">
-    <img src="assets/icons/afaire.webp" onclick="loadEntry('afaire')">
-    <img src="assets/icons/reves.webp" onclick="loadEntry('reves')">
-    <img src="assets/icons/journal.webp" onclick="loadEntry('journal')">
-    <img src="assets/icons/films.webp" onclick="loadEntry('films')">
-    <img src="assets/icons/lectures.webp" onclick="loadEntry('lectures')">
-    <img src="assets/icons/photos.webp" onclick="loadEntry('photos')">
-    <img src="assets/icons/dessins.webp" onclick="loadEntry('dessins')">
+    <!-- CERCLE D’ICÔNES -->
+    <div class="circle">
+      <img src="assets/icons/pensees.webp" onclick="loadEntry('pensees')">
+      <img src="assets/icons/afaire.webp" onclick="loadEntry('afaire')">
+      <img src="assets/icons/reves.webp" onclick="loadEntry('reves')">
+      <img src="assets/icons/journal.webp" onclick="loadEntry('journal')">
+      <img src="assets/icons/films.webp" onclick="loadEntry('films')">
+      <img src="assets/icons/lectures.webp" onclick="loadEntry('lectures')">
+      <img src="assets/icons/photos.webp" onclick="loadEntry('photos')">
+      <img src="assets/icons/dessins.webp" onclick="loadEntry('dessins')">
+    </div>
+
+    <!-- CONTENU -->
+    <div id="entry-content"></div>
   </div>
-
-  <div id="entry-content"></div>
-</div>
 
   <audio id="cassette" loop autoplay>
     <source src="audio/cassette.mp3" type="audio/mpeg">
