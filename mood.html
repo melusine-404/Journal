@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mood Tracker</title>
+  <title>Mon Mood Tracker</title>
   <style>
     body {
       background: #fff8f0;
@@ -18,6 +18,7 @@
       grid-template-columns: repeat(7, 50px);
       gap: 8px;
       justify-content: center;
+      margin-bottom: 20px;
     }
     .day-label {
       font-size: 12px;
@@ -44,43 +45,101 @@
       font-size: 12px;
       color: #888;
     }
+    .monthly-summary {
+      margin-bottom: 30px;
+    }
+    .monthly-summary span {
+      margin: 0 10px;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
-  <h1>Mood Tracker ☺ Avril 2025</h1>
+  <h1>Mon Mood Tracker ☺ 2025</h1>
+  <div class="monthly-summary" id="year-summary"></div>
   <div class="calendar" id="calendar"></div>
- 
+
   <script>
     // Protection d'accès
-if (localStorage.getItem("melusine-unlocked") !== "true") {
-  window.location.href = "index.html";
-}
+    if (localStorage.getItem("melusine-unlocked") !== "true") {
+      window.location.href = "index.html";
+    }
 
-    const moods = ['\ud83d\ude10', '\ud83d\ude42', '\ud83d\ude1e']; // neutre, content, pas content
-    const moodKey = 'mood-tracker-2025-04';
-    const stored = JSON.parse(localStorage.getItem(moodKey) || '{}');
+    const moods = ['😐', '😊', '😞'];
+    const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
+    const months = [
+      { name: 'Janvier', days: 31 },
+      { name: 'Février', days: 29 },
+      { name: 'Mars', days: 31 },
+      { name: 'Avril', days: 30 },
+      { name: 'Mai', days: 31 },
+      { name: 'Juin', days: 30 },
+      { name: 'Juillet', days: 31 },
+      { name: 'Août', days: 31 },
+      { name: 'Septembre', days: 30 },
+      { name: 'Octobre', days: 31 },
+      { name: 'Novembre', days: 30 },
+      { name: 'Décembre', days: 31 }
+    ];
 
+    const currentYear = 2025;
+    const summaryContainer = document.getElementById('year-summary');
     const calendar = document.getElementById('calendar');
-    const daysInApril = 30;
+
+    function updateYearSummary() {
+      summaryContainer.innerHTML = '';
+
+      months.forEach((month, mIndex) => {
+        const key = `mood-tracker-${currentYear}-${String(mIndex + 1).padStart(2, '0')}`;
+        const stored = JSON.parse(localStorage.getItem(key) || '{}');
+
+        let total = 0;
+        let count = 0;
+        for (let i = 1; i <= month.days; i++) {
+          const mood = stored[i];
+          if (mood && moodScores[mood] !== undefined) {
+            total += moodScores[mood];
+            count++;
+          }
+        }
+
+        let average = count > 0 ? (total / count).toFixed(2) : '-';
+        let emoji = '-';
+        if (average !== '-') {
+          if (average > 0.3) emoji = '😊';
+          else if (average < -0.3) emoji = '😞';
+          else emoji = '😐';
+        }
+
+        const span = document.createElement('span');
+        span.innerText = `${month.name} : ${emoji}`;
+        summaryContainer.appendChild(span);
+      });
+    }
+
+    updateYearSummary();
+
+    // Affichage du mois actuel (exemple : avril)
+    const selectedMonth = 3; // avril (0-indexed)
+    const selectedMonthKey = `mood-tracker-${currentYear}-04`;
+    const stored = JSON.parse(localStorage.getItem(selectedMonthKey) || '{}');
 
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-    // Afficher les labels des jours de la semaine
-    for (let d = 0; d < 7; d++) {
+    dayLabels.forEach(day => {
       const label = document.createElement('div');
       label.className = 'day-label';
-      label.innerText = dayLabels[d];
+      label.innerText = day;
       calendar.appendChild(label);
+    });
+
+    const startDay = 1; // mardi 1er avril 2025
+    for (let i = 0; i < startDay; i++) {
+      const empty = document.createElement('div');
+      calendar.appendChild(empty);
     }
 
-    // Premier jour d'avril 2025 = mardi (index 1 si lundi = 0)
-    const startDay = 1;
-    for (let empty = 0; empty < startDay; empty++) {
-      const emptyCell = document.createElement('div');
-      calendar.appendChild(emptyCell);
-    }
-
-    for (let i = 1; i <= daysInApril; i++) {
+    for (let i = 1; i <= months[selectedMonth].days; i++) {
       const cell = document.createElement('div');
       cell.className = 'day';
       cell.dataset.day = i;
@@ -101,7 +160,8 @@ if (localStorage.getItem("melusine-unlocked") !== "true") {
         const mood = moods[next];
         moodSpan.innerText = mood;
         stored[i] = mood;
-        localStorage.setItem(moodKey, JSON.stringify(stored));
+        localStorage.setItem(selectedMonthKey, JSON.stringify(stored));
+        updateYearSummary();
       });
 
       calendar.appendChild(cell);
