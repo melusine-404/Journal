@@ -38,10 +38,6 @@ body {
   cursor: pointer;
 }
 
-.circle img:hover {
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
 /* Placement en cercle parfait */
 .circle img:nth-child(1) { transform: rotate(0deg) translate(180px) rotate(0deg); }
 .circle img:nth-child(2) { transform: rotate(45deg) translate(180px) rotate(-45deg); }
@@ -51,6 +47,10 @@ body {
 .circle img:nth-child(6) { transform: rotate(225deg) translate(180px) rotate(-225deg); }
 .circle img:nth-child(7) { transform: rotate(270deg) translate(180px) rotate(-270deg); }
 .circle img:nth-child(8) { transform: rotate(315deg) translate(180px) rotate(-315deg); }
+
+.circle img:hover {
+  transform: scale(1.2);
+}
 
 #entry-content {
   margin-top: 30px;
