@@ -45,4 +45,35 @@
         column-count: 1;
       }
     }
-  </
+  </style>
+</head>
+<body>
+
+  <!-- 🔐 Protection par mot de passe -->
+  <script>
+    if (localStorage.getItem("melusine-unlocked") !== "true") {
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <h1>Mes photos 📸</h1>
+
+  <div class="gallery"></div>
+
+  <script>
+    const photos = [];
+    for (let i = 1; i <= 13; i++) {
+      photos.push(`photo${i}.jpg`);
+    }
+
+    const container = document.querySelector('.gallery');
+
+    photos.forEach(name => {
+      const img = document.createElement('img');
+      img.src = `assets/photos/${name}`;
+      img.alt = name;
+      container.appendChild(img);
+    });
+  </script>
+</body>
+</html>
