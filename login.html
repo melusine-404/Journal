@@ -6,14 +6,16 @@
   <style>
     body {
       background: #fffaf4;
-      font-family: 'Courier New', monospace;
+  font-family: 'Jackal Holiday';
+  src: url('fonts/JackalHoliday.ttf') format('truetype');
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
     .password-container {
-      background: #fdf6e3;
+  background: url('assets/icons/pageaccueil.jpg') no-repeat center center fixed;
+  background-size: cover;
       padding: 30px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -36,10 +38,10 @@
       cursor: pointer;
     }
     button:hover {
-      background-color: #8c6444;
+      background-color: #3346ff;
     }
     .error {
-      color: red;
+      color: black;
       margin-top: 10px;
     }
   </style>
@@ -47,7 +49,7 @@
 <body>
 
   <div class="password-container">
-    <h2>Entrer le mot de passe</h2>
+    <h2>Sésame, ouvre-toi</h2>
     <input type="password" id="password" placeholder="Mot de passe">
     <br>
     <button onclick="checkPassword()">Accéder</button>
@@ -58,11 +60,11 @@
     function checkPassword() {
       const pwd = document.getElementById("password").value;
       const error = document.getElementById("error");
-      if (pwd === "melusine123") {
+      if (pwd === "hellodiary") {
         localStorage.setItem("access_granted", "true");
         window.location.href = "index.html"; // Change vers la vraie page à afficher
       } else {
-        error.textContent = "Mot de passe incorrect.";
+        error.textContent = "Oups";
       }
     }
   </script>
