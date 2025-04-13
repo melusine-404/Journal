@@ -98,7 +98,7 @@
     .chart-container {
       width: 90%;
       max-width: 700px;
-      margin: 0 auto;
+      margin: 0 auto 40px auto;
       padding: 30px;
     }
 
@@ -113,12 +113,12 @@
       margin-bottom: 20px;
     }
 
-  .battery-icon {
-  width: 60px;
-  height: 60px;
-  cursor: pointer;
-  opacity: 0.5;
-}
+    .battery-icon {
+      width: 60px;
+      height: 60px;
+      cursor: pointer;
+      opacity: 0.5;
+    }
 
     .battery-icon.selected {
       opacity: 1;
@@ -133,10 +133,9 @@
     }
 
     .battery-svg {
-  width: 40px;
-  height: 40px;
-}
-
+      width: 40px;
+      height: 40px;
+    }
   </style>
 </head>
 <body>
@@ -165,12 +164,17 @@
     <canvas id="moodChart"></canvas>
   </div>
 
+  <div class="chart-container">
+    <canvas id="batteryChart"></canvas>
+  </div>
+
   <div class="battery-line" id="batteryLine"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const moods = ['😐', '😊', '😞'];
     const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
+    const batteryColors = ['crimson', 'orange', 'limegreen'];
     const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
 
     const today = new Date();
@@ -248,7 +252,9 @@
     }
 
     const ctx = document.getElementById("moodChart").getContext("2d");
-    let moodChart = new Chart(ctx, {
+    const batteryCtx = document.getElementById("batteryChart").getContext("2d");
+
+    const moodChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [],
@@ -300,6 +306,47 @@
       }
     });
 
+    const batteryChart = new Chart(batteryCtx, {
+      type: 'bar',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Batterie sociale',
+          data: [],
+          backgroundColor: [],
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 800,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            min: 0,
+            max: 2,
+            ticks: {
+              color: '#ffffff',
+              stepSize: 1,
+              callback: val => val === 2 ? '🔋 Pleine' : val === 1 ? '🟠 Moyenne' : '🟥 Vide'
+            },
+            grid: {
+              color: 'rgba(255,255,255,0.2)'
+            }
+          },
+          x: {
+            ticks: { color: '#ffffff' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    });
+
     function updateChart() {
       const labels = [];
       const data = [];
@@ -316,14 +363,25 @@
 
     function updateBatteries() {
       batteryLine.innerHTML = '';
+      const labels = [];
+      const data = [];
+      const colors = [];
       for (let i = 1; i <= daysInMonth; i++) {
         if (stored[i] && batteries[i] !== undefined) {
           const icon = document.createElement("img");
           icon.src = `assets/icons/battery-${batteries[i] === 0 ? 'empty' : batteries[i] === 1 ? 'half' : 'full'}.svg`;
           icon.className = "battery-svg";
           batteryLine.appendChild(icon);
+
+          labels.push(`${i}`);
+          data.push(batteries[i]);
+          colors.push(batteryColors[batteries[i]]);
         }
       }
+      batteryChart.data.labels = labels;
+      batteryChart.data.datasets[0].data = data;
+      batteryChart.data.datasets[0].backgroundColor = colors;
+      batteryChart.update();
     }
 
     updateChart();
