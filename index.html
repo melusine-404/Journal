@@ -3,12 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Mélusine</title>
-<script>
-  if (localStorage.getItem("access_granted") !== "true") {
-    window.location.href = "login.html";
-  }
-</script>
 
+  <!-- Empêche l'affichage du contenu avant vérification -->
+  <style>
+    body {
+      display: none;
+    }
+  </style>
+
+  <!-- Script de vérification -->
+  <script>
+    if (localStorage.getItem("access_granted") !== "true") {
+      window.location.href = "login.html";
+    } else {
+      document.addEventListener("DOMContentLoaded", () => {
+        document.body.style.display = "block";
+      });
+    }
+  </script>
+
+  <!-- Styles -->
   <style>
     @font-face {
       font-family: 'Jackal Holiday';
@@ -64,6 +78,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <h1>Mélusine</h1>
@@ -81,5 +96,4 @@
   </div>
 
 </body>
-
 </html>
