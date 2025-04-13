@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Test Météo</title>
+  <title>Météo</title>
   <style>
     body {
       font-family: sans-serif;
@@ -50,17 +50,18 @@
   </style>
 </head>
 <body>
-  <h1>Météo test</h1>
+  <h1>Météo</h1>
   <div class="calendar" id="calendar"></div>
 
   <script>
     const moods = ['😐', '😊', '😞'];
     const batteries = ['🪫', '🔋', '⚡'];
-
     const calendar = document.getElementById("calendar");
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
+    const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
     for (let i = 1; i <= daysInMonth; i++) {
@@ -69,20 +70,22 @@
 
       const moodDiv = document.createElement("div");
       moodDiv.className = "mood";
-      moodDiv.innerText = moods[0];
+      moodDiv.innerText = stored[i]?.mood || moods[0];
       moodDiv.onclick = e => {
         e.stopPropagation();
-        let current = moods.indexOf(moodDiv.innerText);
+        const current = moods.indexOf(moodDiv.innerText);
         moodDiv.innerText = moods[(current + 1) % moods.length];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
       };
 
       const batteryDiv = document.createElement("div");
       batteryDiv.className = "battery";
-      batteryDiv.innerText = batteries[0];
+      batteryDiv.innerText = stored[i]?.battery || batteries[0];
       batteryDiv.onclick = e => {
         e.stopPropagation();
-        let current = batteries.indexOf(batteryDiv.innerText);
+        const current = batteries.indexOf(batteryDiv.innerText);
         batteryDiv.innerText = batteries[(current + 1) % batteries.length];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
       };
 
       const dayNum = document.createElement("div");
@@ -94,6 +97,11 @@
       cell.appendChild(dayNum);
 
       calendar.appendChild(cell);
+    }
+
+    function updateStore(day, mood, battery) {
+      stored[day] = { mood, battery };
+      localStorage.setItem(key, JSON.stringify(stored));
     }
   </script>
 </body>
