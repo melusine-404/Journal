@@ -15,18 +15,6 @@ body {
   cursor: url('assets/icons/Pacman.cur') 0 0, auto;
 }
 
-#password-screen {
-  background: rgba(255, 255, 255, 0.15);
-  padding: 40px;
-  border-radius: 12px;
-  max-width: 400px;
-  margin: 100px auto;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  color: white;
-  font-family: 'Jackal Holiday', monospace;
-}
-
 .doors-container {
   display: flex;
   justify-content: center;
