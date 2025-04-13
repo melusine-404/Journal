@@ -58,8 +58,8 @@
 
     .calendar {
       display: grid;
-      grid-template-columns: repeat(7, 50px);
-      gap: 8px;
+      grid-template-columns: repeat(7, 60px);
+      gap: 10px;
       justify-content: center;
       margin-bottom: 30px;
     }
@@ -72,22 +72,26 @@
     }
 
     .day {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 70px;
       border: 1px dashed #ccc;
       background: rgba(255,255,255,0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      font-size: 20px;
-      transition: transform 0.2s;
       flex-direction: column;
       border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
 
     .day:hover {
       transform: scale(1.1);
+    }
+
+    .mood, .battery {
+      font-size: 18px;
+      line-height: 1.2;
     }
 
     .day-number {
@@ -148,21 +152,18 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const moods = ['😐', '😊', '😞'];
+    const batteries = ['🔋', '🪫', '⚡'];
     const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
-    const batteryScores = { 0: -1, 1: 0, 2: 1 };
-    const batteryColors = ['crimson', 'orange', 'limegreen'];
+    const batteryScores = { '⚡': 1, '🔋': 0, '🪫': -1 };
     const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
 
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
     const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
-    const batteryKey = `${key}-battery`;
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
 
     const calendar = document.getElementById("calendar");
-    const batteryLine = document.getElementById("batteryLine");
-    const stored = JSON.parse(localStorage.getItem(key) || '{}');
-    const batteries = JSON.parse(localStorage.getItem(batteryKey) || '{}');
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -193,9 +194,7 @@
             borderColor: '#ffffff',
             tension: 0.3,
             pointBackgroundColor: '#ffffff',
-            pointBorderColor: '#000000',
             pointRadius: 5,
-            pointHoverRadius: 7
           },
           {
             label: 'Batterie sociale',
@@ -203,9 +202,7 @@
             borderColor: '#7bffb0',
             tension: 0.3,
             pointBackgroundColor: '#7bffb0',
-            pointBorderColor: '#000000',
             pointRadius: 5,
-            pointHoverRadius: 7
           }
         ]
       },
@@ -223,7 +220,7 @@
             ticks: {
               color: '#ffffff',
               stepSize: 1,
-              callback: val => val === 1 ? '😊 / 🔋 Pleine' : val === 0 ? '😐 / 🟠' : '😞 / 🟥'
+              callback: val => val === 1 ? '😊 / ⚡' : val === 0 ? '😐 / 🔋' : '😞 / 🪫'
             },
             grid: { color: 'rgba(255,255,255,0.2)' }
           },
@@ -240,48 +237,55 @@
       cell.className = "day";
       cell.dataset.day = i;
 
-      const moodSpan = document.createElement("div");
-      moodSpan.innerText = stored[i] || '';
+      const moodDiv = document.createElement("div");
+      moodDiv.className = "mood";
+      moodDiv.innerText = stored[i]?.mood || '';
+      moodDiv.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const current = moods.indexOf(moodDiv.innerText);
+        const next = (current + 1) % moods.length;
+        moodDiv.innerText = moods[next];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
+      });
+
+      const batteryDiv = document.createElement("div");
+      batteryDiv.className = "battery";
+      batteryDiv.innerText = stored[i]?.battery || '';
+      batteryDiv.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const current = batteries.indexOf(batteryDiv.innerText);
+        const next = (current + 1) % batteries.length;
+        batteryDiv.innerText = batteries[next];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
+      });
 
       const number = document.createElement("div");
       number.className = "day-number";
       number.innerText = i;
 
-      cell.appendChild(moodSpan);
+      cell.appendChild(moodDiv);
+      cell.appendChild(batteryDiv);
       cell.appendChild(number);
-
-      cell.addEventListener("click", () => {
-        const currentMood = moods.indexOf(moodSpan.innerText);
-        const nextMood = (currentMood + 1) % moods.length;
-        const mood = moods[nextMood];
-        moodSpan.innerText = mood;
-        stored[i] = mood;
-        batteries[i] = (batteries[i] === undefined) ? 0 : (batteries[i] + 1) % 3;
-        localStorage.setItem(key, JSON.stringify(stored));
-        localStorage.setItem(batteryKey, JSON.stringify(batteries));
-        update();
-      });
-
       calendar.appendChild(cell);
     }
 
-    function update() {
+    function updateStore(day, mood, battery) {
+      stored[day] = { mood, battery };
+      localStorage.setItem(key, JSON.stringify(stored));
+      updateChart();
+    }
+
+    function updateChart() {
       const labels = [];
       const moodData = [];
       const batteryData = [];
 
-      batteryLine.innerHTML = '';
-
       for (let i = 1; i <= daysInMonth; i++) {
-        if (stored[i]) {
+        const d = stored[i];
+        if (d) {
           labels.push(`${i} ${monthsShort[month]}`);
-          moodData.push(moodScores[stored[i]]);
-          batteryData.push(batteryScores[batteries[i] ?? 0]);
-
-          const icon = document.createElement("img");
-          icon.src = `assets/icons/battery-${batteries[i] === 0 ? 'empty' : batteries[i] === 1 ? 'half' : 'full'}.svg`;
-          icon.className = "battery-svg";
-          batteryLine.appendChild(icon);
+          moodData.push(moodScores[d.mood]);
+          batteryData.push(batteryScores[d.battery]);
         }
       }
 
@@ -291,7 +295,7 @@
       moodChart.update();
     }
 
-    update();
+    updateChart();
   </script>
 </body>
 </html>
