@@ -58,8 +58,8 @@
 
     .calendar {
       display: grid;
-      grid-template-columns: repeat(7, 50px);
-      gap: 8px;
+      grid-template-columns: repeat(7, 60px);
+      gap: 10px;
       justify-content: center;
       margin-bottom: 30px;
     }
@@ -72,22 +72,27 @@
     }
 
     .day {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 100px;
       border: 1px dashed #ccc;
       background: rgba(255,255,255,0.9);
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 20px;
-      transition: transform 0.2s;
+      justify-content: space-between;
       flex-direction: column;
       border-radius: 10px;
+      padding: 5px 0;
+      font-size: 20px;
     }
 
     .day:hover {
-      transform: scale(1.1);
+      transform: scale(1.05);
+    }
+
+    .mood, .battery {
+      cursor: pointer;
+      font-size: 20px;
+      user-select: none;
     }
 
     .day-number {
@@ -148,21 +153,24 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const moods = ['😐', '😊', '😞'];
+    const batteries = ['🪫', '🔋', '⚡'];
     const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
-    const batteryScores = { 0: -1, 1: 0, 2: 1 };
-    const batteryColors = ['crimson', 'orange', 'limegreen'];
+    const batteryScores = { '🪫': -1, '🔋': 0, '⚡': 1 };
+    const batteryIcons = {
+      '🪫': 'battery-empty',
+      '🔋': 'battery-half',
+      '⚡': 'battery-full'
+    };
     const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
 
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
     const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
-    const batteryKey = `${key}-battery`;
+    const dataStore = JSON.parse(localStorage.getItem(key) || '{}');
 
     const calendar = document.getElementById("calendar");
     const batteryLine = document.getElementById("batteryLine");
-    const stored = JSON.parse(localStorage.getItem(key) || '{}');
-    const batteries = JSON.parse(localStorage.getItem(batteryKey) || '{}');
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -223,7 +231,7 @@
             ticks: {
               color: '#ffffff',
               stepSize: 1,
-              callback: val => val === 1 ? '😊 / 🔋 Pleine' : val === 0 ? '😐 / 🟠' : '😞 / 🟥'
+              callback: val => val === 1 ? '😊 / ⚡' : val === 0 ? '😐 / 🔋' : '😞 / 🪫'
             },
             grid: { color: 'rgba(255,255,255,0.2)' }
           },
@@ -238,48 +246,56 @@
     for (let i = 1; i <= daysInMonth; i++) {
       const cell = document.createElement("div");
       cell.className = "day";
-      cell.dataset.day = i;
 
-      const moodSpan = document.createElement("div");
-      moodSpan.innerText = stored[i] || '';
+      const moodDiv = document.createElement("div");
+      moodDiv.className = "mood";
+      moodDiv.innerText = dataStore[i]?.mood || moods[0];
+      moodDiv.onclick = () => {
+        let current = moods.indexOf(moodDiv.innerText);
+        moodDiv.innerText = moods[(current + 1) % moods.length];
+        updateData(i, moodDiv.innerText, batteryDiv.innerText);
+      };
+
+      const batteryDiv = document.createElement("div");
+      batteryDiv.className = "battery";
+      batteryDiv.innerText = dataStore[i]?.battery || batteries[0];
+      batteryDiv.onclick = () => {
+        let current = batteries.indexOf(batteryDiv.innerText);
+        batteryDiv.innerText = batteries[(current + 1) % batteries.length];
+        updateData(i, moodDiv.innerText, batteryDiv.innerText);
+      };
 
       const number = document.createElement("div");
       number.className = "day-number";
       number.innerText = i;
 
-      cell.appendChild(moodSpan);
+      cell.appendChild(moodDiv);
+      cell.appendChild(batteryDiv);
       cell.appendChild(number);
-
-      cell.addEventListener("click", () => {
-        const currentMood = moods.indexOf(moodSpan.innerText);
-        const nextMood = (currentMood + 1) % moods.length;
-        const mood = moods[nextMood];
-        moodSpan.innerText = mood;
-        stored[i] = mood;
-        batteries[i] = (batteries[i] === undefined) ? 0 : (batteries[i] + 1) % 3;
-        localStorage.setItem(key, JSON.stringify(stored));
-        localStorage.setItem(batteryKey, JSON.stringify(batteries));
-        update();
-      });
-
       calendar.appendChild(cell);
+    }
+
+    function updateData(day, mood, battery) {
+      dataStore[day] = { mood, battery };
+      localStorage.setItem(key, JSON.stringify(dataStore));
+      update();
     }
 
     function update() {
       const labels = [];
       const moodData = [];
       const batteryData = [];
-
       batteryLine.innerHTML = '';
 
       for (let i = 1; i <= daysInMonth; i++) {
-        if (stored[i]) {
+        if (dataStore[i]) {
           labels.push(`${i} ${monthsShort[month]}`);
-          moodData.push(moodScores[stored[i]]);
-          batteryData.push(batteryScores[batteries[i] ?? 0]);
+          moodData.push(moodScores[dataStore[i].mood]);
+          batteryData.push(batteryScores[dataStore[i].battery]);
 
           const icon = document.createElement("img");
-          icon.src = `assets/icons/battery-${batteries[i] === 0 ? 'empty' : batteries[i] === 1 ? 'half' : 'full'}.svg`;
+          const srcName = batteryIcons[dataStore[i].battery] || 'battery-empty';
+          icon.src = `assets/icons/${srcName}.svg`;
           icon.className = "battery-svg";
           batteryLine.appendChild(icon);
         }
