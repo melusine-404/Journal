@@ -129,16 +129,13 @@
   <div class="calendar" id="calendar"></div>
 
   <div class="mood-level">
-    <div class="level-controls">
-      <button onclick="adjustLevel(-1)">−</button>
-      <button onclick="adjustLevel(1)">+</button>
-    </div>
-    <div class="level-bar" id="levelBar"></div>
+  <div class="level-controls">
+    <button onclick="adjustLevel(-1)">−</button>
+    <button onclick="adjustLevel(1)">+</button>
   </div>
-
-  <div class="gif-container">
-    <img id="moodGif" src="assets/icons/full.webp" alt="Gif humeur" width="100">
-  </div>
+  <div class="level-bar" id="levelBar"></div>
+  <img id="moodGif" src="assets/icons/full.webp" alt="Gif humeur" width="100" style="margin-left: 20px;">
+</div>
 
   <div class="chart-container">
     <canvas id="moodChart"></canvas>
@@ -226,10 +223,10 @@
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            labels: { color: '#fff' }
-          }
-        },
+  legend: {
+    display: false
+  }
+},
         scales: {
           y: {
             min: -1,
