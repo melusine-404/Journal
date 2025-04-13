@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Météo</title>
+  <style>
+    @font-face {
+      font-family: 'Jackal Holiday';
+      src: url('fonts/JackalHoliday.ttf') format('truetype');
+    }
+
+    body {
+      background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Jackal Holiday', cursive;
+      padding: 40px;
+      margin: 0;
+      text-align: center;
+      color: white;
+    }
+
+    h1 {
+      font-size: 3.5em;
+      color: white;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .nav-icons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+      margin-top: -10px;
+    }
+
+    .nav-icons a {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .nav-icons a:hover {
+      transform: scale(1.1) rotate(3deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .nav-icons img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 60px);
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .day-label {
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    }
+
+    .day {
+      width: 60px;
+      height: 90px;
+      border: 1px dashed #ccc;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .mood, .battery {
+      font-size: 20px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .day-number {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .chart-container {
+      width: 90%;
+      max-width: 700px;
+      margin: 0 auto 40px auto;
+      padding: 30px;
+    }
+
+    canvas {
+      background: transparent !important;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-icons">
+    <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
+      <img src="assets/icons/journal.png" alt="Journal">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/meteo.html" title="Météo">
+      <img src="assets/icons/meteo.png" alt="Météo">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/saisons.html" title="Saisons">
+      <img src="assets/icons/saisons.png" alt="Saisons">
+    </a>
+  </nav>
+
+  <h1>Météo</h1>
+  <div class="calendar" id="calendar"></div>
+
+  <div class="chart-container">
+    <canvas id="moodChart"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const moods = ['😐', '😊', '😞'];
+    const batteries = ['🪫', '🔋', '⚡'];
+    const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
+    const batteryScores = { '⚡': 1, '🔋': 0, '🪫': -1 };
+    const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
+
+    const calendar = document.getElementById("calendar");
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+    dayLabels.forEach(day => {
+      const label = document.createElement("div");
+      label.className = "day-label";
+      label.innerText = day;
+      calendar.appendChild(label);
+    });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const startDay = (firstDay + 6) % 7;
+    for (let i = 0; i < startDay; i++) {
+      calendar.appendChild(document.createElement("div"));
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+
+      const moodDiv = document.createElement("div");
+      moodDiv.className = "mood";
+      moodDiv.innerText = stored[i]?.mood || '';
+      moodDiv.addEventListener("click", e => {
+        e.stopPropagation();
+        const current = moods.indexOf(moodDiv.innerText);
+        const next = (current + 1) % moods.length;
+        moodDiv.innerText = moods[next];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
+      });
+
+      const batteryDiv = document.createElement("div");
+      batteryDiv.className = "battery";
+      batteryDiv.innerText = stored[i]?.battery || '';
+      batteryDiv.addEventListener("click", e => {
+        e.stopPropagation();
+        const current = batteries.indexOf(batteryDiv.innerText);
+        const next = (current + 1) % batteries.length;
+        batteryDiv.innerText = batteries[next];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
+      });
+
+      const dayNumber = document.createElement("div");
+      dayNumber.className = "day-number";
+      dayNumber.innerText = i;
+
+      cell.appendChild(moodDiv);
+      cell.appendChild(batteryDiv);
+      cell.appendChild(dayNumber);
+      calendar.appendChild(cell);
+    }
+
+    const ctx = document.getElementById("moodChart").getContext("2d");
+    const moodChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Humeur',
+            data: [],
+            borderColor: '#ffffff',
+            backgroundColor: '#ffffff',
+            tension: 0.4,
+            pointRadius: 4
+          },
+          {
+            label: 'Batterie sociale',
+            data: [],
+            borderColor: '#00ffcc',
+            backgroundColor: '#00ffcc',
+            tension: 0.4,
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: 'white' } }
+        },
+        scales: {
+          y: {
+            min: -1,
+            max: 1,
+            ticks: {
+              color: 'white',
+              stepSize: 1,
+              callback: val => val === 1 ? '😊 / ⚡' : val === 0 ? '😐 / 🔋' : '😞 / 🪫'
+            },
+            grid: { color: 'rgba(255,255,255,0.2)' }
+          },
+          x: {
+            ticks: { color: 'white' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    });
+
+    function updateStore(day, mood, battery) {
+      stored[day] = { mood, battery };
+      localStorage.setItem(key, JSON.stringify(stored));
+      updateChart();
+    }
+
+    function updateChart() {
+      const labels = [];
+      const moodData = [];
+      const batteryData = [];
+      for (let i = 1; i <= daysInMonth; i++) {
+        const d = stored[i];
+        if (d) {
+          labels.push(`${i} ${monthsShort[month]}`);
+          moodData.push(moodScores[d.mood]);
+          batteryData.push(batteryScores[d.battery]);
+        }
+      }
+      moodChart.data.labels = labels;
+      moodChart.data.datasets[0].data = moodData;
+      moodChart.data.datasets[1].data = batteryData;
+      moodChart.update();
+    }
+
+    updateChart();
+  </script>
+</body>
+</html>
