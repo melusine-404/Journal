@@ -26,42 +26,12 @@
       text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
 
-    .nav-icons {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-bottom: 40px;
-      margin-top: -10px;
-    }
-
-    .nav-icons a {
-      display: inline-block;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      overflow: hidden;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .nav-icons a:hover {
-      transform: scale(1.1) rotate(3deg);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    }
-
-    .nav-icons img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
     .calendar {
       display: grid;
       grid-template-columns: repeat(7, 60px);
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
     }
 
     .day-label {
@@ -73,31 +43,16 @@
 
     .day {
       width: 60px;
-      height: 100px;
+      height: 60px;
       border: 1px dashed #ccc;
       background: rgba(255,255,255,0.9);
       display: flex;
-      align-items: center;
-      justify-content: space-between;
       flex-direction: column;
-      border-radius: 10px;
-      padding: 5px 0;
-      font-size: 20px;
-    }
-
-    .day:hover {
-      transform: scale(1.05);
-    }
-
-    .mood, .battery {
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       font-size: 20px;
-      user-select: none;
-      visibility: hidden;
-    }
-
-    .mood.clicked, .battery.clicked {
-      visibility: visible;
+      border-radius: 10px;
     }
 
     .day-number {
@@ -112,95 +67,97 @@
       padding: 30px;
     }
 
+    .mood-level {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .level-bar {
+      display: flex;
+      width: 200px;
+      height: 30px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid white;
+    }
+
+    .level-segment {
+      flex: 1;
+      height: 100%;
+    }
+
+    .red { background: crimson; }
+    .orange { background: orange; }
+    .green { background: limegreen; }
+
+    .level-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .level-controls button {
+      font-size: 1.2em;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: none;
+      background: white;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .level-controls button:hover {
+      background: #eee;
+    }
+
+    .gif-container {
+      margin-top: 20px;
+    }
+
     canvas {
       background: transparent !important;
     }
-
-    .battery-line {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-      padding: 10px;
-    }
-
-    .battery-svg {
-      width: 60px;
-      height: 60px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      border-radius: 8px;
-    }
-
-    .battery-bar {
-      width: 300px;
-      height: 30px;
-      display: flex;
-      margin: 0 auto 20px;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      cursor: pointer;
-    }
-    .battery-bar div {
-      flex: 1;
-    }
-    .battery-bar .low { background: crimson; }
-    .battery-bar .mid { background: orange; }
-    .battery-bar .high { background: limegreen; }
   </style>
 </head>
 <body>
-  <nav class="nav-icons">
-    <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
-      <img src="assets/icons/journal.png" alt="Journal">
-    </a>
-    <a href="https://melusine-404.github.io/Journal/meteo.html" title="Météo">
-      <img src="assets/icons/meteo.png" alt="Météo">
-    </a>
-    <a href="https://melusine-404.github.io/Journal/saisons.html" title="Saisons">
-      <img src="assets/icons/saisons.png" alt="Saisons">
-    </a>
-  </nav>
-
   <h1>Météo</h1>
 
   <div class="calendar" id="calendar"></div>
 
-  <h3>Semaine</h3>
-  <div class="battery-bar" onclick="adjustBattery(event)">
-    <div class="low" data-level="-1"></div>
-    <div class="mid" data-level="0"></div>
-    <div class="high" data-level="1"></div>
+  <div class="mood-level">
+    <div class="level-controls">
+      <button onclick="adjustLevel(-1)">−</button>
+      <button onclick="adjustLevel(1)">+</button>
+    </div>
+    <div class="level-bar" id="levelBar"></div>
+  </div>
+
+  <div class="gif-container">
+    <img id="moodGif" src="assets/gif/full.webp" alt="Gif humeur" width="100">
   </div>
 
   <div class="chart-container">
     <canvas id="moodChart"></canvas>
   </div>
 
-  <div class="battery-line" id="batteryLine"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const moods = ['😐', '😊', '😞'];
-    const batteries = ['🪫', '🔋', '⚡'];
     const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
-    const batteryScores = { '🪫': -1, '🔋': 0, '⚡': 1 };
-    const batteryIcons = {
-      '🪫': 'battery-empty',
-      '🔋': 'battery-half',
-      '⚡': 'battery-full'
-    };
     const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
+    const gifs = ['assets/gif/empty.webp', 'assets/gif/half.webp', 'assets/gif/full.webp'];
 
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
     const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
-    const dataStore = JSON.parse(localStorage.getItem(key) || '{}');
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
 
     const calendar = document.getElementById("calendar");
-    const batteryLine = document.getElementById("batteryLine");
 
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -219,29 +176,51 @@
       calendar.appendChild(empty);
     }
 
-    const moodChartCtx = document.getElementById("moodChart").getContext("2d");
-    const moodChart = new Chart(moodChartCtx, {
+    for (let i = 1; i <= daysInMonth; i++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+      cell.dataset.day = i;
+
+      const moodSpan = document.createElement("div");
+      moodSpan.innerText = stored[i] || '';
+
+      const number = document.createElement("div");
+      number.className = "day-number";
+      number.innerText = i;
+
+      cell.appendChild(moodSpan);
+      cell.appendChild(number);
+
+      cell.addEventListener("click", () => {
+        const current = moods.indexOf(moodSpan.innerText);
+        const next = (current + 1) % moods.length;
+        const mood = moods[next];
+        moodSpan.innerText = mood;
+        stored[i] = mood;
+        localStorage.setItem(key, JSON.stringify(stored));
+        updateChart();
+      });
+
+      calendar.appendChild(cell);
+    }
+
+    const ctx = document.getElementById("moodChart").getContext("2d");
+    const moodChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [],
-        datasets: [
-          {
-            label: 'Humeur',
-            data: [],
-            borderColor: 'rgba(255,255,255,0.8)',
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            tension: 0.4,
-            fill: true
-          },
-          {
-            label: 'Batterie sociale',
-            data: [],
-            borderColor: 'rgba(123,255,176,0.9)',
-            backgroundColor: 'rgba(123,255,176,0.3)',
-            tension: 0.4,
-            fill: true
-          }
-        ]
+        datasets: [{
+          label: 'Humeur',
+          data: [],
+          borderColor: '#ffffff',
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#000000',
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }]
       },
       options: {
         responsive: true,
@@ -256,7 +235,8 @@
             max: 1,
             ticks: {
               color: '#ffffff',
-              stepSize: 1
+              stepSize: 1,
+              callback: val => val === 1 ? '😊' : val === 0 ? '😐' : '😞'
             },
             grid: { color: 'rgba(255,255,255,0.2)' }
           },
@@ -268,94 +248,42 @@
       }
     });
 
-    for (let i = 1; i <= daysInMonth; i++) {
-      const cell = document.createElement("div");
-      cell.className = "day";
-
-      const moodDiv = document.createElement("div");
-      moodDiv.className = "mood";
-      moodDiv.innerText = '';
-      moodDiv.onclick = () => {
-        let current = moods.indexOf(moodDiv.innerText);
-        let next = (current + 1) % moods.length;
-        moodDiv.innerText = moods[next];
-        moodDiv.classList.add('clicked');
-        updateData(i, moodDiv.innerText, batteryDiv.innerText);
-      };
-
-      const batteryDiv = document.createElement("div");
-      batteryDiv.className = "battery";
-      batteryDiv.innerText = '';
-      batteryDiv.onclick = () => {
-        let current = batteries.indexOf(batteryDiv.innerText);
-        let next = (current + 1) % batteries.length;
-        batteryDiv.innerText = batteries[next];
-        batteryDiv.classList.add('clicked');
-        updateData(i, moodDiv.innerText, batteryDiv.innerText);
-      };
-
-      const number = document.createElement("div");
-      number.className = "day-number";
-      number.innerText = i;
-
-      if (dataStore[i]) {
-        moodDiv.innerText = dataStore[i].mood;
-        batteryDiv.innerText = dataStore[i].battery;
-        moodDiv.classList.add('clicked');
-        batteryDiv.classList.add('clicked');
-      }
-
-      cell.appendChild(moodDiv);
-      cell.appendChild(batteryDiv);
-      cell.appendChild(number);
-      calendar.appendChild(cell);
-    }
-
-    function updateData(day, mood, battery) {
-      dataStore[day] = { mood, battery };
-      localStorage.setItem(key, JSON.stringify(dataStore));
-      update();
-    }
-
-    function update() {
-      const labels = [];
-      const moodData = [];
-      const batteryData = [];
-      batteryLine.innerHTML = '';
-
+    function updateChart() {
+      const labels = [], data = [];
       for (let i = 1; i <= daysInMonth; i++) {
-        if (dataStore[i]) {
+        if (stored[i]) {
           labels.push(`${i} ${monthsShort[month]}`);
-          moodData.push(moodScores[dataStore[i].mood]);
-          batteryData.push(batteryScores[dataStore[i].battery]);
-
-          const icon = document.createElement("img");
-          const srcName = batteryIcons[dataStore[i].battery] || 'battery-empty';
-          icon.src = `assets/icons/${srcName}.svg`;
-          icon.className = "battery-svg";
-          batteryLine.appendChild(icon);
+          data.push(moodScores[stored[i]]);
         }
       }
-
       moodChart.data.labels = labels;
-      moodChart.data.datasets[0].data = moodData;
-      moodChart.data.datasets[1].data = batteryData;
+      moodChart.data.datasets[0].data = data;
       moodChart.update();
     }
 
-    function adjustBattery(e) {
-      const level = parseInt(e.target.dataset.level);
-      if (isNaN(level)) return;
-      for (let i = 1; i <= daysInMonth; i++) {
-        if (!dataStore[i]) continue;
-        let value = Object.entries(batteryScores).find(([k,v]) => v === level)?.[0];
-        if (value) dataStore[i].battery = value;
-      }
-      localStorage.setItem(key, JSON.stringify(dataStore));
-      update();
+    // Niveau de batterie sociale (indépendant)
+    let batteryLevel = parseInt(localStorage.getItem("batt-week")) || 2;
+
+    function renderBatteryBar() {
+      const bar = document.getElementById("levelBar");
+      const gif = document.getElementById("moodGif");
+      bar.innerHTML = "";
+
+      if (batteryLevel >= 0) bar.innerHTML += `<div class="level-segment red"></div>`;
+      if (batteryLevel >= 1) bar.innerHTML += `<div class="level-segment orange"></div>`;
+      if (batteryLevel >= 2) bar.innerHTML += `<div class="level-segment green"></div>`;
+
+      gif.src = gifs[batteryLevel];
     }
 
-    update();
+    function adjustLevel(change) {
+      batteryLevel = Math.max(0, Math.min(2, batteryLevel + change));
+      localStorage.setItem("batt-week", batteryLevel);
+      renderBatteryBar();
+    }
+
+    updateChart();
+    renderBatteryBar();
   </script>
 </body>
 </html>
