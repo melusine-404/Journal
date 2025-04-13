@@ -137,7 +137,7 @@
   </div>
 
   <div class="gif-container">
-    <img id="moodGif" src="assets/gif/full.webp" alt="Gif humeur" width="100">
+    <img id="moodGif" src="assets/full.webp" alt="Gif humeur" width="100">
   </div>
 
   <div class="chart-container">
@@ -182,7 +182,8 @@
       cell.dataset.day = i;
 
       const moodSpan = document.createElement("div");
-      moodSpan.innerText = stored[i] || '';
+      moodSpan.innerText = moods.includes(stored[i]) ? stored[i] : '';
+
 
       const number = document.createElement("div");
       number.className = "day-number";
