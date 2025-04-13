@@ -10,11 +10,9 @@
 </head>
 <body>
 
-<!-- ✅ BON lien Three.js -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-
-<!-- ✅ BON lien GLTFLoader compatible -->
-<script src="https://rawcdn.githack.com/mrdoob/three.js/r153/examples/js/loaders/GLTFLoader.js"></script>
+<!-- Scripts locaux -->
+<script src="modules/three.min.js"></script>
+<script src="modules/GLTFLoader.js"></script>
 
 <script>
   const scene = new THREE.Scene();
@@ -32,7 +30,6 @@
   scene.add(light);
   scene.add(new THREE.AmbientLight(0xaaaaaa, 0.6));
 
-  // ✅ Cette ligne fonctionne maintenant
   const loader = new THREE.GLTFLoader();
   loader.load("assets/avatar/avatar.glb", function(gltf) {
     const model = gltf.scene;
@@ -40,7 +37,7 @@
     scene.add(model);
     animate();
   }, undefined, function(error) {
-    console.error("Erreur chargement avatar :", error);
+    console.error("Erreur de chargement du modèle :", error);
   });
 
   function animate() {
