@@ -217,7 +217,7 @@
     <div id="dropzone">d'avoir un bleu</div>
     <input type="file" id="imageInput" accept="image/*" multiple>
     <div class="preview" id="preview"></div>
-    <button onclick="saveEntry()">Enregistrer</button>
+    <button onclick="saveEntry()">et hop</button>
   </div>
 
   <div id="entries"></div>
@@ -296,7 +296,7 @@
           <time>${formattedDate}</time>
           <p>${text.replace(/\n/g, '<br>')}</p>
           ${imagesHTML}
-          <button class="delete-button" onclick="deleteEntry('${key}', this)">🗑 Supprimer</button>
+          <button class="delete-button" onclick="deleteEntry('${key}', this)">🗑</button>
         </div>
       `;
       document.getElementById('entries').insertAdjacentHTML('afterbegin', entryHTML);
