@@ -142,12 +142,14 @@
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
 
-      const entryHTML = `
-        <div class="entry">
-          <time>${formattedDate}</time>
-          <p>${text.replace(/\n/g, '<br>')}</p>
-        </div>
-      `;
+ const entryHTML = `
+  <div class="entry" data-key="${iso}">
+    <time>${formattedDate}</time>
+    <p>${text.replace(/\n/g, '<br>')}</p>
+    <button class="delete-button" onclick="deleteEntry('${iso}', this)">🗑 Supprimer</button>
+  </div>
+`;
+
 
       document.getElementById('entries').insertAdjacentHTML('afterbegin', entryHTML);
       localStorage.setItem(iso, text);
@@ -164,11 +166,18 @@
         });
         const text = localStorage.getItem(key);
         const entryHTML = `
-          <div class="entry">
-            <time>${formattedDate}</time>
-            <p>${text.replace(/\n/g, '<br>')}</p>
-          </div>
-        `;
+  <div class="entry" data-key="${key}">
+    <time>${formattedDate}</time>
+    <p>${text.replace(/\n/g, '<br>')}</p>
+    <button class="delete-button" onclick="deleteEntry('${key}', this)">🗑 Supprimer</button>
+  </div>
+`;
+function deleteEntry(key, button) {
+  localStorage.removeItem(key);
+  const entryElement = button.closest('.entry');
+  entryElement.remove();
+}
+
         document.getElementById('entries').insertAdjacentHTML('beforeend', entryHTML);
       });
     }
