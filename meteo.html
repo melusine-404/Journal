@@ -300,7 +300,7 @@
       moodChart.update();
     }
 
-    let batteryLevel = parseInt(localStorage.getItem("batt-week")) || 2;
+    let batteryLevel = parseInt(localStorage.getItem("batt-week")) ?? 2;
 
     function renderBatteryBar() {
       const bar = document.getElementById("levelBar");
