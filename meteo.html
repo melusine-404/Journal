@@ -7,36 +7,6 @@
     @font-face {
       font-family: 'Jackal Holiday';
       src: url('fonts/JackalHoliday.ttf') format('truetype');
-      .nav-icons {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-bottom: 40px;
-  margin-top: -10px;
-}
-
-.nav-icons a {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.nav-icons a:hover {
-  transform: scale(1.1) rotate(3deg);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-
-.nav-icons img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
     }
 
     body {
@@ -54,6 +24,36 @@
       color: white;
       margin-bottom: 40px;
       text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .nav-icons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+      margin-top: -10px;
+    }
+
+    .nav-icons a {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .nav-icons a:hover {
+      transform: scale(1.1) rotate(3deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .nav-icons img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
     }
 
     .calendar {
@@ -101,7 +101,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 30px;
       margin-bottom: 30px;
     }
 
@@ -145,16 +145,21 @@
     }
 
     .gif-container {
-      margin-top: 20px;
+      margin-top: 0;
     }
 
     canvas {
       background: transparent !important;
     }
+
+    .gif-container img {
+      width: 100px;
+      height: auto;
+    }
   </style>
 </head>
 <body>
-  <body>
+  <!-- 🔁 Navigation vers autres pages -->
   <nav class="nav-icons">
     <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
       <img src="assets/icons/journal.png" alt="Journal">
@@ -172,13 +177,15 @@
   <div class="calendar" id="calendar"></div>
 
   <div class="mood-level">
-  <div class="level-controls">
-    <button onclick="adjustLevel(-1)">−</button>
-    <button onclick="adjustLevel(1)">+</button>
+    <div class="level-controls">
+      <button onclick="adjustLevel(-1)">−</button>
+      <button onclick="adjustLevel(1)">+</button>
+    </div>
+    <div class="level-bar" id="levelBar"></div>
+    <div class="gif-container">
+      <img id="moodGif" src="assets/icons/full.webp" alt="Gif humeur">
+    </div>
   </div>
-  <div class="level-bar" id="levelBar"></div>
-  <img id="moodGif" src="assets/icons/full.webp" alt="Gif humeur" width="100" style="margin-left: 20px;">
-</div>
 
   <div class="chart-container">
     <canvas id="moodChart"></canvas>
@@ -224,7 +231,6 @@
       const moodSpan = document.createElement("div");
       moodSpan.innerText = moods.includes(stored[i]) ? stored[i] : '';
 
-
       const number = document.createElement("div");
       number.className = "day-number";
       number.innerText = i;
@@ -251,7 +257,6 @@
       data: {
         labels: [],
         datasets: [{
-          label: 'Humeur',
           data: [],
           borderColor: '#ffffff',
           backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -266,10 +271,8 @@
       options: {
         responsive: true,
         plugins: {
-  legend: {
-    display: false
-  }
-},
+          legend: { display: false }
+        },
         scales: {
           y: {
             min: -1,
@@ -302,7 +305,7 @@
       moodChart.update();
     }
 
-    // Niveau de batterie sociale (indépendant)
+    // Niveau batterie sociale (indépendant)
     let batteryLevel = parseInt(localStorage.getItem("batt-week")) || 2;
 
     function renderBatteryBar() {
