@@ -2,39 +2,31 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Avatar 3D + Webcam</title>
+  <title>Mon Avatar 3D</title>
   <style>
-    body { margin: 0; background: #000; overflow: hidden; }
+    body { margin: 0; background: #f0f0f0; overflow: hidden; }
     canvas { display: block; }
-    #webcam { display: none; }
   </style>
 </head>
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/controls/OrbitControls.js"></script>
 
-<video id="webcam" autoplay playsinline></video>
+  <script>
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xfefefe);
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
-
-<script>
-  let model;
-  let camera, scene, renderer;
-  let avatarHead;
-
-  // Initialisation Three.js
-  function initThree() {
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xf0f0f0);
-
-    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 1.6, 2.5);
 
-    renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 1.6, 0);
+    controls.update();
 
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(2, 4, 5);
@@ -45,10 +37,19 @@
 
     const loader = new THREE.GLTFLoader();
     loader.load("https://models.readyplayer.me/67fb82339752635b325df9ae.glb", function(gltf) {
-      model = gltf.scene;
+      const model = gltf.scene;
       model.scale.set(1, 1, 1);
       scene.add(model);
-      avatarHead = model.getObjectByName("Head") || model; // fallback si le nom n’est pas exact
+
+      // Animation douce
+      let angle = 0;
+      function animateModel() {
+        requestAnimationFrame(animateModel);
+        angle += 0.01;
+        model.rotation.y = Math.sin(angle) * 0.2;
+        renderer.render(scene, camera);
+      }
+      animateModel();
     });
 
     window.addEventListener('resize', () => {
@@ -56,55 +57,6 @@
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
-  }
-
-  initThree();
-
-  // Animation loop
-  function animate() {
-    requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  // MediaPipe + Webcam
-  const videoElement = document.getElementById('webcam');
-
-  const faceMesh = new FaceMesh({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
-  });
-
-  faceMesh.setOptions({
-    maxNumFaces: 1,
-    refineLandmarks: true,
-    minDetectionConfidence: 0.7,
-    minTrackingConfidence: 0.7
-  });
-
-  faceMesh.onResults(results => {
-    if (results.multiFaceLandmarks.length > 0 && avatarHead) {
-      const landmarks = results.multiFaceLandmarks[0];
-
-      const nose = landmarks[1]; // position centrale du nez
-      const forehead = landmarks[10]; // haut du visage
-
-      // Détection simple : mouvement vertical et horizontal
-      const dx = (nose.x - 0.5) * 2;
-      const dy = (forehead.y - nose.y) * 2;
-
-      avatarHead.rotation.y = dx;           // gauche/droite
-      avatarHead.rotation.x = dy * 0.5;     // haut/bas
-    }
-  });
-
-  const cam = new Camera(videoElement, {
-    onFrame: async () => {
-      await faceMesh.send({ image: videoElement });
-    },
-    width: 640,
-    height: 480
-  });
-  cam.start();
-</script>
+  </script>
 </body>
 </html>
