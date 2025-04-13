@@ -2,29 +2,24 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Journal</title>
-
-  <!-- POLICE -->
+  <title>Météo</title>
   <style>
     @font-face {
       font-family: 'Jackal Holiday';
       src: url('fonts/JackalHoliday.ttf') format('truetype');
     }
-  </style>
 
-  <!-- STYLE GÉNÉRAL -->
-  <style>
     body {
-      background: url('assets/icons/accueildessin.jpg') no-repeat center center fixed;
+      background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
       background-size: cover;
       font-family: 'Jackal Holiday', cursive;
       padding: 40px;
       margin: 0;
+      text-align: center;
       color: white;
     }
 
     h1 {
-      text-align: center;
       font-size: 3.5em;
       color: white;
       margin-bottom: 40px;
@@ -61,143 +56,111 @@
       border-radius: 50%;
     }
 
-    #journal-form {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      margin: auto;
-      margin-bottom: 40px;
-      max-width: 700px;
-      color: black;
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 70px);
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 30px;
     }
 
-    textarea {
-      width: 100%;
-      height: 150px;
-      padding: 12px;
-      font-size: 1em;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-family: 'Jackal Holiday', cursive;
-      color: black;
-      background-color: white;
-      margin-bottom: 10px;
+    .day-label {
+      font-size: 14px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
     }
 
-    #imageInput {
-      margin-bottom: 10px;
-    }
-
-    .preview {
+    .day {
+      width: 70px;
+      height: 70px;
+      border: 1px dashed #ccc;
+      background: rgba(255,255,255,0.9);
       display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      font-size: 20px;
+      transition: transform 0.2s;
+      flex-direction: column;
+      border-radius: 10px;
+      padding: 5px 2px;
+    }
+
+    .day:hover {
+      transform: scale(1.1);
+    }
+
+    .day-number {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .chart-container {
+      width: 90%;
+      max-width: 700px;
+      margin: 0 auto 40px auto;
+      padding: 30px;
+    }
+
+    canvas {
+      background: transparent !important;
+    }
+
+    .battery-line {
+      display: flex;
+      justify-content: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-bottom: 10px;
+      margin-top: 20px;
+      padding: 10px;
     }
 
-    .preview img {
-      max-width: 100px;
+    .battery-svg {
+      width: 60px;
+      height: 60px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    #dropzone {
-      background: #f9f9f9;
-      border: 2px dashed #aaa;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      color: #666;
-      font-style: italic;
-      margin-bottom: 10px;
+    .weekly-battery-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
     }
 
-    button {
-      background-color: black;
-      color: white;
-      border: none;
-      padding: 10px 20px;
+    .weekly-color-box {
+      display: flex;
+      width: 300px;
+      height: 30px;
       border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .weekly-color-box div {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .weekly-color-box .red { background: crimson; }
+    .weekly-color-box .orange { background: orange; }
+    .weekly-color-box .green { background: limegreen; }
+
+    .weekly-controls button {
+      background: #fff;
+      color: #000;
       font-weight: bold;
-      font-size: 1em;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #333;
-    }
-
-    #entries {
-      column-count: 3;
-      column-gap: 20px;
-      padding-top: 20px;
-    }
-
-    .entry {
-      break-inside: avoid;
-      background: white;
-      color: black;
-      border-radius: 10px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      position: relative;
-      transition: all 0.4s ease;
-    }
-
-    .entry time {
-      display: block;
-      font-size: 0.9em;
-      color: #555;
-      margin-bottom: 10px;
-    }
-
-    .entry img {
-      max-width: 100%;
-      margin-top: 10px;
-      border-radius: 8px;
-    }
-
-    .delete-button {
-      margin-top: 10px;
-      background-color: #e74c3c;
-      color: white;
+      font-size: 20px;
       border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
+      padding: 5px 15px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9em;
-    }
-
-    .delete-button:hover {
-      background-color: #c0392b;
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 1; transform: scale(1); }
-      to { opacity: 0; transform: scale(0.95); }
-    }
-
-    .entry.removing {
-      animation: fadeOut 0.4s ease forwards;
-    }
-
-    @media (max-width: 1000px) {
-      #entries {
-        column-count: 2;
-      }
-    }
-
-    @media (max-width: 600px) {
-      #entries {
-        column-count: 1;
-      }
     }
   </style>
 </head>
 <body>
-
   <nav class="nav-icons">
     <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
       <img src="assets/icons/journal.png" alt="Journal">
@@ -210,119 +173,179 @@
     </a>
   </nav>
 
-  <h1>Journal</h1>
+  <h1>Météo</h1>
 
-  <div id="journal-form">
-    <textarea id="entry" placeholder="Quel est le comble pour un poisson rouge ?"></textarea>
-    <div id="dropzone">d'avoir un bleu</div>
-    <input type="file" id="imageInput" accept="image/*" multiple>
-    <div class="preview" id="preview"></div>
-    <button onclick="saveEntry()">et hop</button>
+  <div class="weekly-battery-box">
+    <div class="weekly-controls">
+      <button onclick="adjustWeekBattery(-1)">−</button>
+    </div>
+    <div class="weekly-color-box" onclick="adjustWeekBattery(0)">
+      <div class="red" title="Vide"></div>
+      <div class="orange" title="Moyenne"></div>
+      <div class="green" title="Pleine"></div>
+    </div>
+    <div class="weekly-controls">
+      <button onclick="adjustWeekBattery(1)">+</button>
+    </div>
   </div>
 
-  <div id="entries"></div>
+  <div class="calendar" id="calendar"></div>
 
+  <div class="chart-container">
+    <canvas id="moodChart"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    let imagesData = [];
+    const moods = ['😐', '😊', '😞'];
+    const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
+    const batteryScores = { 0: -1, 1: 0, 2: 1 };
+    const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
 
-    const imageInput = document.getElementById('imageInput');
-    const preview = document.getElementById('preview');
-    const dropzone = document.getElementById('dropzone');
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
+    const batteryKey = `${key}-battery`;
 
-    imageInput.addEventListener('change', handleFiles);
+    const calendar = document.getElementById("calendar");
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
+    const batteries = JSON.parse(localStorage.getItem(batteryKey) || '{}');
 
-    dropzone.addEventListener('dragover', e => {
-      e.preventDefault();
-      dropzone.style.background = "#eee";
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const startDay = (firstDay + 6) % 7;
+    const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+    dayLabels.forEach(day => {
+      const label = document.createElement("div");
+      label.className = "day-label";
+      label.innerText = day;
+      calendar.appendChild(label);
     });
 
-    dropzone.addEventListener('dragleave', e => {
-      e.preventDefault();
-      dropzone.style.background = "#f9f9f9";
-    });
-
-    dropzone.addEventListener('drop', e => {
-      e.preventDefault();
-      dropzone.style.background = "#f9f9f9";
-      handleFiles({ target: { files: e.dataTransfer.files } });
-    });
-
-    function handleFiles(event) {
-      const files = event.target.files;
-      for (let file of files) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          imagesData.push(e.target.result);
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          preview.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      }
+    for (let i = 0; i < startDay; i++) {
+      calendar.appendChild(document.createElement("div"));
     }
 
-    function saveEntry() {
-      const text = document.getElementById('entry').value.trim();
-      if (!text && imagesData.length === 0) return;
+    for (let i = 1; i <= daysInMonth; i++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+      cell.dataset.day = i;
 
-      const date = new Date();
-      const iso = date.toISOString();
-      const formattedDate = date.toLocaleDateString('fr-FR', {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      const moodSpan = document.createElement("div");
+      moodSpan.innerText = stored[i] || '';
+
+      const batterySpan = document.createElement("div");
+      batterySpan.innerText = batteries[i] !== undefined ? ['🟥','🟠','🔋'][batteries[i]] : '';
+
+      const number = document.createElement("div");
+      number.className = "day-number";
+      number.innerText = i;
+
+      moodSpan.addEventListener("click", () => {
+        const current = moods.indexOf(moodSpan.innerText);
+        const next = (current + 1) % moods.length;
+        moodSpan.innerText = moods[next];
+        stored[i] = moods[next];
+        localStorage.setItem(key, JSON.stringify(stored));
+        updateChart();
       });
 
-      const entry = {
-        text,
-        images: imagesData
-      };
-
-      localStorage.setItem(iso, JSON.stringify(entry));
-      renderEntry(formattedDate, entry.text, entry.images, iso);
-
-      document.getElementById('entry').value = '';
-      document.getElementById('imageInput').value = '';
-      imagesData = [];
-      preview.innerHTML = '';
-    }
-
-    function renderEntry(formattedDate, text, images, key) {
-      let imagesHTML = '';
-      if (images) {
-        imagesHTML = images.map(src => `<img src="${src}">`).join('');
-      }
-
-      const entryHTML = `
-        <div class="entry" data-key="${key}">
-          <time>${formattedDate}</time>
-          <p>${text.replace(/\n/g, '<br>')}</p>
-          ${imagesHTML}
-          <button class="delete-button" onclick="deleteEntry('${key}', this)">🗑</button>
-        </div>
-      `;
-      document.getElementById('entries').insertAdjacentHTML('afterbegin', entryHTML);
-    }
-
-    function deleteEntry(key, button) {
-      if (!confirm("On oublie tout ?")) return;
-      localStorage.removeItem(key);
-      const entryElement = button.closest('.entry');
-      entryElement.classList.add('removing');
-      setTimeout(() => entryElement.remove(), 400);
-    }
-
-    window.onload = function() {
-      const keys = Object.keys(localStorage).sort().reverse();
-      keys.forEach(key => {
-        if (!key.includes('T')) return;
-        const data = JSON.parse(localStorage.getItem(key));
-        const date = new Date(key);
-        const formattedDate = date.toLocaleDateString('fr-FR', {
-          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-        renderEntry(formattedDate, data.text, data.images, key);
+      batterySpan.addEventListener("click", () => {
+        batteries[i] = (batteries[i] === undefined) ? 0 : (batteries[i] + 1) % 3;
+        batterySpan.innerText = ['🟥','🟠','🔋'][batteries[i]];
+        localStorage.setItem(batteryKey, JSON.stringify(batteries));
+        updateChart();
       });
+
+      cell.appendChild(number);
+      cell.appendChild(moodSpan);
+      cell.appendChild(batterySpan);
+      calendar.appendChild(cell);
     }
+
+    const ctx = document.getElementById("moodChart").getContext("2d");
+    const moodChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: 'Humeur',
+            data: [],
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderColor: '#ffffff',
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: 'Batterie sociale',
+            data: [],
+            backgroundColor: 'rgba(123,255,176,0.2)',
+            borderColor: '#7bffb0',
+            tension: 0.3,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            labels: { color: '#fff' }
+          }
+        },
+        scales: {
+          y: {
+            min: -1,
+            max: 1,
+            ticks: {
+              color: '#ffffff',
+              stepSize: 1,
+              callback: val => val === 1 ? '😊 / 🔋' : val === 0 ? '😐 / 🟠' : '😞 / 🟥'
+            },
+            grid: { color: 'rgba(255,255,255,0.2)' }
+          },
+          x: {
+            ticks: { color: '#ffffff' },
+            grid: { color: 'rgba(255,255,255,0.1)' }
+          }
+        }
+      }
+    });
+
+    function updateChart() {
+      const labels = [];
+      const moodData = [];
+      const batteryData = [];
+      for (let i = 1; i <= daysInMonth; i++) {
+        if (stored[i]) {
+          labels.push(`${i} ${monthsShort[month]}`);
+          moodData.push(moodScores[stored[i]]);
+          batteryData.push(batteryScores[batteries[i] ?? 0]);
+        }
+      }
+      moodChart.data.labels = labels;
+      moodChart.data.datasets[0].data = moodData;
+      moodChart.data.datasets[1].data = batteryData;
+      moodChart.update();
+    }
+
+    function adjustWeekBattery(change) {
+      for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(year, month, i);
+        if (date.getDay() === 1) batteries[i] = 2; // lundi : batterie verte
+        else if (stored[i]) {
+          batteries[i] = Math.min(2, Math.max(0, (batteries[i] ?? 0) + change));
+        }
+      }
+      localStorage.setItem(batteryKey, JSON.stringify(batteries));
+      updateChart();
+      location.reload();
+    }
+
+    updateChart();
   </script>
-
 </body>
 </html>
