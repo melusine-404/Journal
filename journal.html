@@ -2,182 +2,122 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Journal</title>
-
-  <!-- POLICE JACKAL HOLIDAY -->
-  <style>
-    @font-face {
-      font-family: 'Jackal Holiday';
-      src: url('fonts/JackalHoliday.ttf') format('truetype');
-    }
-  </style>
-
-  <!-- STYLES -->
+  <title>Mon Journal Intime</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
-      background-color: #f0f0f0;
-      font-family: 'Jackal Holiday', cursive;
+      background: #fffaf0;
+      font-family: "Georgia", serif;
       padding: 40px;
-      margin: 0;
+      max-width: 700px;
+      margin: auto;
+      background-image: url('assets/icons/pageaccueil.jpg');
+      background-size: cover;
+      background-attachment: fixed;
     }
 
     h1 {
       text-align: center;
-      font-size: 3em;
-      color: #222;
-      margin-bottom: 40px;
+      font-size: 2.8em;
+      color: #3e2c1c;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 0 #fff;
     }
 
     #journal-form {
-      background: white;
+      background: rgba(255, 255, 255, 0.9);
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      margin: auto;
-      margin-bottom: 40px;
-      max-width: 700px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
     }
 
     textarea {
       width: 100%;
       height: 150px;
-      padding: 12px;
+      padding: 10px;
+      font-family: 'Courier New', monospace;
       font-size: 1em;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid #ccc;
-      font-family: 'Jackal Holiday', cursive;
-      color: black;
-      background-color: white;
+      margin-top: 10px;
+      margin-bottom: 15px;
     }
 
     button {
-      background-color: black;
-      color: white;
+      background-color: #c79b6d;
       border: none;
       padding: 10px 20px;
-      border-radius: 8px;
+      color: white;
       font-weight: bold;
-      font-size: 1em;
+      border-radius: 6px;
       cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #333;
-    }
-
-    #entries {
-      column-count: 3;
-      column-gap: 20px;
-      padding-top: 20px;
     }
 
     .entry {
-      break-inside: avoid;
-      background: white;
-      color: black;
-      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.85);
       padding: 15px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      border-left: 5px solid #c79b6d;
+      border-radius: 8px;
     }
 
     .entry time {
-      display: block;
       font-size: 0.9em;
-      color: #555;
+      color: #6e5e4c;
+      display: block;
       margin-bottom: 10px;
-    }
-
-    /* Responsive */
-    @media (max-width: 1000px) {
-      #entries {
-        column-count: 2;
-      }
-    }
-
-    @media (max-width: 600px) {
-      #entries {
-        column-count: 1;
-      }
     }
   </style>
 </head>
 <body>
-
-  <h1>Journal</h1>
+  <h1>Mon Journal Intime</h1>
 
   <div id="journal-form">
-    <textarea id="entry" placeholder="Écris quelque chose..."></textarea>
+    <label for="entry">Écris ici ton billet :</label>
+    <textarea id="entry" placeholder="Ce que j'ai vécu aujourd'hui..."></textarea>
     <button onclick="saveEntry()">Enregistrer</button>
   </div>
 
   <div id="entries"></div>
 
-  .delete-button {
-  margin-top: 10px;
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9em;
-}
-
-.delete-button:hover {
-  background-color: #c0392b;
-}
-
-  
-  <!-- SCRIPT -->
   <script>
     function saveEntry() {
       const text = document.getElementById('entry').value.trim();
       if (text === '') return;
 
       const date = new Date();
-      const iso = date.toISOString();
       const formattedDate = date.toLocaleDateString('fr-FR', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
 
- const entryHTML = `
-  <div class="entry" data-key="${iso}">
-    <time>${formattedDate}</time>
-    <p>${text.replace(/\n/g, '<br>')}</p>
-    <button class="delete-button" onclick="deleteEntry('${iso}', this)">🗑 Supprimer</button>
-  </div>
-`;
-
+      const entryHTML = `
+        <div class="entry">
+          <time>${formattedDate}</time>
+          <p>${text.replace(/\n/g, '<br>')}</p>
+        </div>
+      `;
 
       document.getElementById('entries').insertAdjacentHTML('afterbegin', entryHTML);
-      localStorage.setItem(iso, text);
+      localStorage.setItem(date.toISOString(), text);
       document.getElementById('entry').value = '';
     }
 
     window.onload = function() {
       const keys = Object.keys(localStorage).sort().reverse();
       keys.forEach(key => {
-        if (!key.includes('T')) return;
+        if (!key.includes('T')) return; // ignore non-date keys
         const date = new Date(key);
         const formattedDate = date.toLocaleDateString('fr-FR', {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
         const text = localStorage.getItem(key);
         const entryHTML = `
-  <div class="entry" data-key="${key}">
-    <time>${formattedDate}</time>
-    <p>${text.replace(/\n/g, '<br>')}</p>
-    <button class="delete-button" onclick="deleteEntry('${key}', this)">🗑 Supprimer</button>
-  </div>
-`;
-function deleteEntry(key, button) {
-  localStorage.removeItem(key);
-  const entryElement = button.closest('.entry');
-  entryElement.remove();
-}
-
+          <div class="entry">
+            <time>${formattedDate}</time>
+            <p>${text.replace(/\n/g, '<br>')}</p>
+          </div>
+        `;
         document.getElementById('entries').insertAdjacentHTML('beforeend', entryHTML);
       });
     }
