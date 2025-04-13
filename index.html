@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Mélusine</title>
+<script>
+  if (localStorage.getItem("access_granted") !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
 
   <style>
     @font-face {
