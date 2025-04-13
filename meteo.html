@@ -3,46 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Météo</title>
-
-  <!-- POLICE JACKAL HOLIDAY -->
   <style>
     @font-face {
       font-family: 'Jackal Holiday';
       src: url('fonts/JackalHoliday.ttf') format('truetype');
     }
-  </style>
-
-  <!-- STYLES -->
-  <style>
-    .nav-icons {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-bottom: 40px;
-  margin-top: -10px;
-}
-
-.nav-icons a {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.nav-icons a:hover {
-  transform: scale(1.1) rotate(3deg);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-}
-
-.nav-icons img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
 
     body {
       background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
@@ -110,54 +75,89 @@
     canvas {
       background: transparent !important;
     }
+
+    .battery-selector {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .battery-icon {
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+      opacity: 0.5;
+    }
+
+    .battery-icon.selected {
+      opacity: 1;
+    }
+
+    .battery-line {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 20px;
+    }
+
+    .battery-svg {
+      width: 24px;
+      height: 24px;
+    }
   </style>
 </head>
 <body>
-  <nav class="nav-icons">
-  <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
-    <img src="assets/icons/journal.png" alt="Journal">
-  </a>
-  <a href="https://melusine-404.github.io/Journal/meteo.html" title="Météo">
-    <img src="assets/icons/meteo.png" alt="Météo">
-  </a>
-  <a href="https://melusine-404.github.io/Journal/saisons.html" title="Saisons">
-    <img src="assets/icons/saisons.png" alt="Saisons">
-  </a>
-</nav>
-
-
   <h1>Météo</h1>
-
   <div class="calendar" id="calendar"></div>
-
+  <div class="battery-selector" id="batterySelector">
+    <img src="assets/icons/battery-empty.svg" class="battery-icon" data-level="0" title="Vide">
+    <img src="assets/icons/battery-half.svg" class="battery-icon" data-level="1" title="Moyenne">
+    <img src="assets/icons/battery-full.svg" class="battery-icon" data-level="2" title="Pleine">
+  </div>
   <div class="chart-container">
     <canvas id="moodChart"></canvas>
   </div>
+  <div class="battery-line" id="batteryLine"></div>
 
-  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <script>
-    if (localStorage.getItem("melusine-unlocked") !== "true") {
-      window.location.href = "index.html";
-    }
+    const batterySelector = document.getElementById("batterySelector");
+    let selectedBatteryLevel = null;
 
-    const moods = ['😐', '😊', '😞'];
+    batterySelector.addEventListener("click", (e) => {
+      if (e.target.classList.contains("battery-icon")) {
+        document.querySelectorAll(".battery-icon").forEach(icon => icon.classList.remove("selected"));
+        e.target.classList.add("selected");
+        selectedBatteryLevel = parseInt(e.target.dataset.level);
+      }
+    });
+
+    const batteryIcons = [
+      "assets/icons/battery-empty.svg",
+      "assets/icons/battery-half.svg",
+      "assets/icons/battery-full.svg"
+    ];
+
     const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
-    const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
-    const daysInMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
+    const moods = ['😐', '😊', '😞'];
     const today = new Date();
     const year = today.getFullYear();
     const month = today.getMonth();
-    const calendar = document.getElementById('calendar');
     const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
+    const calendar = document.getElementById("calendar");
+    const batteryLine = document.getElementById("batteryLine");
     const stored = JSON.parse(localStorage.getItem(key) || '{}');
+    const batteries = JSON.parse(localStorage.getItem(key + "-battery") || '{}');
 
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
     dayLabels.forEach(day => {
-      const label = document.createElement('div');
-      label.className = 'day-label';
+      const label = document.createElement("div");
+      label.className = "day-label";
       label.innerText = day;
       calendar.appendChild(label);
     });
@@ -165,39 +165,46 @@
     const firstDay = new Date(year, month, 1).getDay();
     const startDay = (firstDay + 6) % 7;
     for (let i = 0; i < startDay; i++) {
-      const empty = document.createElement('div');
+      const empty = document.createElement("div");
       calendar.appendChild(empty);
     }
 
-    for (let i = 1; i <= daysInMonth[month]; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'day';
+    for (let i = 1; i <= daysInMonth; i++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
       cell.dataset.day = i;
 
-      const moodSpan = document.createElement('div');
+      const moodSpan = document.createElement("div");
       moodSpan.innerText = stored[i] || '';
 
-      const number = document.createElement('div');
-      number.className = 'day-number';
+      const number = document.createElement("div");
+      number.className = "day-number";
       number.innerText = i;
 
       cell.appendChild(moodSpan);
       cell.appendChild(number);
 
-      cell.addEventListener('click', () => {
+      cell.addEventListener("click", () => {
         const current = moods.indexOf(moodSpan.innerText);
         const next = (current + 1) % moods.length;
         const mood = moods[next];
         moodSpan.innerText = mood;
         stored[i] = mood;
         localStorage.setItem(key, JSON.stringify(stored));
+
+        if (selectedBatteryLevel !== null) {
+          batteries[i] = selectedBatteryLevel;
+          localStorage.setItem(key + "-battery", JSON.stringify(batteries));
+        }
+
         updateChart();
+        updateBatteries();
       });
 
       calendar.appendChild(cell);
     }
 
-    const ctx = document.getElementById('moodChart').getContext('2d');
+    const ctx = document.getElementById("moodChart").getContext("2d");
     let moodChart = new Chart(ctx, {
       type: 'line',
       data: {
@@ -253,14 +260,10 @@
     function updateChart() {
       const labels = [];
       const data = [];
-      for (let m = 0; m <= month; m++) {
-        const k = `mood-tracker-${year}-${String(m+1).padStart(2, '0')}`;
-        const d = JSON.parse(localStorage.getItem(k) || '{}');
-        for (let i = 1; i <= daysInMonth[m]; i++) {
-          if (d[i]) {
-            labels.push(`${i} ${monthsShort[m]}`);
-            data.push(moodScores[d[i]]);
-          }
+      for (let i = 1; i <= daysInMonth; i++) {
+        if (stored[i]) {
+          labels.push(`${i} ${monthsShort[month]}`);
+          data.push(moodScores[stored[i]]);
         }
       }
       moodChart.data.labels = labels;
@@ -268,8 +271,20 @@
       moodChart.update();
     }
 
-    updateChart();
-  </script>
+    function updateBatteries() {
+      batteryLine.innerHTML = '';
+      for (let i = 1; i <= daysInMonth; i++) {
+        if (stored[i] && batteries[i] !== undefined) {
+          const icon = document.createElement("img");
+          icon.src = batteryIcons[batteries[i]];
+          icon.className = "battery-svg";
+          batteryLine.appendChild(icon);
+        }
+      }
+    }
 
+    updateChart();
+    updateBatteries();
+  </script>
 </body>
 </html>
