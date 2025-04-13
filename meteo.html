@@ -9,23 +9,6 @@
       src: url('fonts/JackalHoliday.ttf') format('truetype');
     }
 
-    body {
-      background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Jackal Holiday', cursive;
-      padding: 40px;
-      margin: 0;
-      text-align: center;
-      color: white;
-    }
-
-    h1 {
-      font-size: 3.5em;
-      color: white;
-      margin-bottom: 40px;
-      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    }
-
     .nav-icons {
       display: flex;
       justify-content: center;
@@ -54,6 +37,23 @@
       height: 100%;
       object-fit: cover;
       border-radius: 50%;
+    }
+
+    body {
+      background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: 'Jackal Holiday', cursive;
+      padding: 40px;
+      margin: 0;
+      text-align: center;
+      color: white;
+    }
+
+    h1 {
+      font-size: 3.5em;
+      color: white;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
 
     .calendar {
@@ -101,7 +101,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 30px;
+      gap: 10px;
       margin-bottom: 30px;
     }
 
@@ -145,21 +145,16 @@
     }
 
     .gif-container {
-      margin-top: 0;
+      margin-top: 20px;
     }
 
     canvas {
       background: transparent !important;
     }
-
-    .gif-container img {
-      width: 100px;
-      height: auto;
-    }
   </style>
 </head>
 <body>
-  <!-- 🔁 Navigation vers autres pages -->
+
   <nav class="nav-icons">
     <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
       <img src="assets/icons/journal.png" alt="Journal">
@@ -182,9 +177,7 @@
       <button onclick="adjustLevel(1)">+</button>
     </div>
     <div class="level-bar" id="levelBar"></div>
-    <div class="gif-container">
-      <img id="moodGif" src="assets/icons/full.webp" alt="Gif humeur">
-    </div>
+    <img id="moodGif" src="assets/icons/full.webp" alt="Gif humeur" width="100" style="margin-left: 20px;">
   </div>
 
   <div class="chart-container">
@@ -205,7 +198,6 @@
     const stored = JSON.parse(localStorage.getItem(key) || '{}');
 
     const calendar = document.getElementById("calendar");
-
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -257,6 +249,7 @@
       data: {
         labels: [],
         datasets: [{
+          label: 'Humeur',
           data: [],
           borderColor: '#ffffff',
           backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -271,7 +264,9 @@
       options: {
         responsive: true,
         plugins: {
-          legend: { display: false }
+          legend: {
+            display: false
+          }
         },
         scales: {
           y: {
@@ -305,7 +300,6 @@
       moodChart.update();
     }
 
-    // Niveau batterie sociale (indépendant)
     let batteryLevel = parseInt(localStorage.getItem("batt-week")) || 2;
 
     function renderBatteryBar() {
