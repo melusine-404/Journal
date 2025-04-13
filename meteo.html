@@ -73,7 +73,7 @@
 
     .day {
       width: 60px;
-      height: 70px;
+      height: 80px;
       border: 1px dashed #ccc;
       background: rgba(255,255,255,0.9);
       display: flex;
@@ -81,17 +81,12 @@
       justify-content: center;
       flex-direction: column;
       border-radius: 10px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .day:hover {
-      transform: scale(1.1);
     }
 
     .mood, .battery {
-      font-size: 18px;
+      font-size: 20px;
       line-height: 1.2;
+      cursor: pointer;
     }
 
     .day-number {
@@ -108,22 +103,6 @@
 
     canvas {
       background: transparent !important;
-    }
-
-    .battery-line {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 20px;
-      padding: 10px;
-    }
-
-    .battery-svg {
-      width: 60px;
-      height: 60px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-      border-radius: 8px;
     }
   </style>
 </head>
@@ -147,8 +126,6 @@
     <canvas id="moodChart"></canvas>
   </div>
 
-  <div class="battery-line" id="batteryLine"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const moods = ['😐', '😊', '😞'];
@@ -164,7 +141,6 @@
     const stored = JSON.parse(localStorage.getItem(key) || '{}');
 
     const calendar = document.getElementById("calendar");
-
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
@@ -178,12 +154,47 @@
     const firstDay = new Date(year, month, 1).getDay();
     const startDay = (firstDay + 6) % 7;
     for (let i = 0; i < startDay; i++) {
-      const empty = document.createElement("div");
-      calendar.appendChild(empty);
+      calendar.appendChild(document.createElement("div"));
     }
 
-    const moodChartCtx = document.getElementById("moodChart").getContext("2d");
-    const moodChart = new Chart(moodChartCtx, {
+    for (let i = 1; i <= daysInMonth; i++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+
+      const moodDiv = document.createElement("div");
+      moodDiv.className = "mood";
+      moodDiv.innerText = stored[i]?.mood || '';
+      moodDiv.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const current = moods.indexOf(moodDiv.innerText);
+        const next = (current + 1) % moods.length;
+        moodDiv.innerText = moods[next];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
+      });
+
+      const batteryDiv = document.createElement("div");
+      batteryDiv.className = "battery";
+      batteryDiv.innerText = stored[i]?.battery || '';
+      batteryDiv.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const current = batteries.indexOf(batteryDiv.innerText);
+        const next = (current + 1) % batteries.length;
+        batteryDiv.innerText = batteries[next];
+        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
+      });
+
+      const dayNumber = document.createElement("div");
+      dayNumber.className = "day-number";
+      dayNumber.innerText = i;
+
+      cell.appendChild(moodDiv);
+      cell.appendChild(batteryDiv);
+      cell.appendChild(dayNumber);
+      calendar.appendChild(cell);
+    }
+
+    const ctx = document.getElementById("moodChart").getContext("2d");
+    const moodChart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: [],
@@ -194,7 +205,7 @@
             borderColor: '#ffffff',
             tension: 0.3,
             pointBackgroundColor: '#ffffff',
-            pointRadius: 5,
+            pointRadius: 5
           },
           {
             label: 'Batterie sociale',
@@ -202,7 +213,7 @@
             borderColor: '#7bffb0',
             tension: 0.3,
             pointBackgroundColor: '#7bffb0',
-            pointRadius: 5,
+            pointRadius: 5
           }
         ]
       },
@@ -231,43 +242,6 @@
         }
       }
     });
-
-    for (let i = 1; i <= daysInMonth; i++) {
-      const cell = document.createElement("div");
-      cell.className = "day";
-      cell.dataset.day = i;
-
-      const moodDiv = document.createElement("div");
-      moodDiv.className = "mood";
-      moodDiv.innerText = stored[i]?.mood || '';
-      moodDiv.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const current = moods.indexOf(moodDiv.innerText);
-        const next = (current + 1) % moods.length;
-        moodDiv.innerText = moods[next];
-        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
-      });
-
-      const batteryDiv = document.createElement("div");
-      batteryDiv.className = "battery";
-      batteryDiv.innerText = stored[i]?.battery || '';
-      batteryDiv.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const current = batteries.indexOf(batteryDiv.innerText);
-        const next = (current + 1) % batteries.length;
-        batteryDiv.innerText = batteries[next];
-        updateStore(i, moodDiv.innerText, batteryDiv.innerText);
-      });
-
-      const number = document.createElement("div");
-      number.className = "day-number";
-      number.innerText = i;
-
-      cell.appendChild(moodDiv);
-      cell.appendChild(batteryDiv);
-      cell.appendChild(number);
-      calendar.appendChild(cell);
-    }
 
     function updateStore(day, mood, battery) {
       stored[day] = { mood, battery };
