@@ -2,103 +2,78 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>POLYSÉMIQUE</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Polysémique</title>
+
   <style>
+    @font-face {
+      font-family: 'Jackal Holiday';
+      src: url('fonts/JackalHoliday.ttf') format('truetype');
+    }
+
     body {
-  background: url('assets/icons/pageaccueil.jpg') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Jackal Holiday';
-  src: url('fonts/JackalHoliday.ttf') format('truetype');
-      text-align: center;
-      padding-top: 200px;
-    }
-
-    .doors-container {
+      margin: 0;
+      padding: 0;
+      background-color: #fefefe;
+      font-family: 'Jackal Holiday', cursive;
       display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      gap: 40px;
+      height: 100vh;
+      text-align: center;
     }
 
-    .door {
-      position: relative;
-      width: 150px;
-      height: 250px;
-      cursor: pointer;
-      perspective: 1000px;
+    h1 {
+      font-size: 6em;
+      margin-bottom: 60px;
+      color: #222;
     }
 
-    .door-inner {
-      position: absolute;
+    .icon-grid {
+      display: flex;
+      gap: 60px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .icon-link {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .icon-link:hover {
+      transform: rotate(10deg) scale(1.05);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    .icon-link img {
       width: 100%;
       height: 100%;
-      transition: transform 1s;
-      transform-style: preserve-3d;
-    }
-
-    .door.open .door-inner {
-      transform: rotateY(-120deg);
-    }
-
-    .door-front, .door-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-    .door-front {
-      background-image: url('assets/icons/porte1.png');
-      background-size: cover;
-      background-position: center;
-    }
-
-    .door-back {
-      background: #fffbe9;
-      transform: rotateY(180deg);
-    }
-
-    .door-title {
-      margin-top: 15px;
-      font-weight: bold;
-      font-size: 1.1em;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <h1>POLYSÉMIQUE</h1>
+  <h1>Polysémique</h1>
 
-  <div class="doors-container">
-    <div class="door" onclick="openDoor(this, 'journal.html')">
-      <div class="door-inner">
-        <div class="door-front" style="background-image: url('assets/icons/porte1.png');"></div>
-        <div class="door-back"></div>
-    </div>
-
-    <div class="door" onclick="openDoor(this, 'saisons.html')">
-      <div class="door-inner">
-        <div class="door-front" style="background-image: url('assets/icons/porte2.png');"></div>
-        <div class="door-back"></div>
-    </div>
-
-    <div class="door" onclick="openDoor(this, 'meteo.html')">
-      <div class="door-inner">
-        <div class="door-front" style="background-image: url('assets/icons/porte3.png');"></div>
-        <div class="door-back"></div>
-    </div>
+  <div class="icon-grid">
+    <a href="https://melusine-404.github.io/Journal/journal.html" class="icon-link">
+      <img src="assets/icons/journal.png" alt="Journal">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/meteo.html" class="icon-link">
+      <img src="assets/icons/meteo.png" alt="Météo">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/saisons.html" class="icon-link">
+      <img src="assets/icons/saisons.png" alt="Saisons">
+    </a>
   </div>
-
-  <script>
-    function openDoor(element, link) {
-      element.classList.add('open');
-      setTimeout(() => {
-        window.location.href = link;
-      }, 1000); // temps de l'animation
-    }
-  </script>
 
 </body>
 </html>
