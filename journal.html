@@ -2,120 +2,195 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Mon Journal Intime</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Journal</title>
+
+  <!-- POLICE JACKAL HOLIDAY -->
+  <style>
+    @font-face {
+      font-family: 'Jackal Holiday';
+      src: url('fonts/JackalHoliday.ttf') format('truetype');
+    }
+  </style>
+
+  <!-- STYLES -->
   <style>
     body {
-      background: #fffaf0;
-      font-family: "Georgia", serif;
+      background-color: #f0f0f0;
+      font-family: 'Jackal Holiday', cursive;
       padding: 40px;
-      max-width: 700px;
-      margin: auto;
-      background-image: url('assets/icons/pageaccueil.jpg');
-      background-size: cover;
-      background-attachment: fixed;
+      margin: 0;
     }
 
     h1 {
       text-align: center;
-      font-size: 2.8em;
-      color: #3e2c1c;
-      margin-bottom: 30px;
-      text-shadow: 1px 1px 0 #fff;
+      font-size: 3em;
+      color: #222;
+      margin-bottom: 40px;
     }
 
     #journal-form {
-      background: rgba(255, 255, 255, 0.9);
+      background: white;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      margin: auto;
+      margin-bottom: 40px;
+      max-width: 700px;
     }
 
     textarea {
       width: 100%;
       height: 150px;
-      padding: 10px;
-      font-family: 'Courier New', monospace;
+      padding: 12px;
       font-size: 1em;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      margin-top: 10px;
-      margin-bottom: 15px;
+      font-family: 'Jackal Holiday', cursive;
+      color: black;
+      background-color: white;
     }
 
     button {
-      background-color: #c79b6d;
+      background-color: black;
+      color: white;
       border: none;
       padding: 10px 20px;
-      color: white;
+      border-radius: 8px;
       font-weight: bold;
-      border-radius: 6px;
+      font-size: 1em;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #333;
+    }
+
+    #entries {
+      column-count: 3;
+      column-gap: 20px;
+      padding-top: 20px;
     }
 
     .entry {
-      background: rgba(255, 255, 255, 0.85);
+      break-inside: avoid;
+      background: white;
+      color: black;
+      border-radius: 10px;
       padding: 15px;
       margin-bottom: 20px;
-      border-left: 5px solid #c79b6d;
-      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      position: relative;
+      transition: all 0.4s ease;
     }
 
     .entry time {
-      font-size: 0.9em;
-      color: #6e5e4c;
       display: block;
+      font-size: 0.9em;
+      color: #555;
       margin-bottom: 10px;
+    }
+
+    .delete-button {
+      margin-top: 10px;
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .delete-button:hover {
+      background-color: #c0392b;
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: scale(1); }
+      to { opacity: 0; transform: scale(0.95); }
+    }
+
+    .entry.removing {
+      animation: fadeOut 0.4s ease forwards;
+    }
+
+    /* Responsive */
+    @media (max-width: 1000px) {
+      #entries {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 600px) {
+      #entries {
+        column-count: 1;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Mon Journal Intime</h1>
+
+  <h1>Journal</h1>
 
   <div id="journal-form">
-    <label for="entry">Écris ici ton billet :</label>
-    <textarea id="entry" placeholder="Ce que j'ai vécu aujourd'hui..."></textarea>
+    <textarea id="entry" placeholder="Écris quelque chose..."></textarea>
     <button onclick="saveEntry()">Enregistrer</button>
   </div>
 
   <div id="entries"></div>
 
+  <!-- SCRIPT -->
   <script>
     function saveEntry() {
       const text = document.getElementById('entry').value.trim();
       if (text === '') return;
 
       const date = new Date();
+      const iso = date.toISOString();
       const formattedDate = date.toLocaleDateString('fr-FR', {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
       });
 
       const entryHTML = `
-        <div class="entry">
+        <div class="entry" data-key="${iso}">
           <time>${formattedDate}</time>
           <p>${text.replace(/\n/g, '<br>')}</p>
+          <button class="delete-button" onclick="deleteEntry('${iso}', this)">🗑 Supprimer</button>
         </div>
       `;
 
       document.getElementById('entries').insertAdjacentHTML('afterbegin', entryHTML);
-      localStorage.setItem(date.toISOString(), text);
+      localStorage.setItem(iso, text);
       document.getElementById('entry').value = '';
+    }
+
+    function deleteEntry(key, button) {
+      const confirmation = confirm("Tu es sûr·e de vouloir supprimer ce billet ?");
+      if (!confirmation) return;
+
+      localStorage.removeItem(key);
+      const entryElement = button.closest('.entry');
+      entryElement.classList.add('removing');
+      setTimeout(() => {
+        entryElement.remove();
+      }, 400);
     }
 
     window.onload = function() {
       const keys = Object.keys(localStorage).sort().reverse();
       keys.forEach(key => {
-        if (!key.includes('T')) return; // ignore non-date keys
+        if (!key.includes('T')) return;
         const date = new Date(key);
         const formattedDate = date.toLocaleDateString('fr-FR', {
           weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
         });
         const text = localStorage.getItem(key);
         const entryHTML = `
-          <div class="entry">
+          <div class="entry" data-key="${key}">
             <time>${formattedDate}</time>
             <p>${text.replace(/\n/g, '<br>')}</p>
+            <button class="delete-button" onclick="deleteEntry('${key}', this)">🗑 Supprimer</button>
           </div>
         `;
         document.getElementById('entries').insertAdjacentHTML('beforeend', entryHTML);
