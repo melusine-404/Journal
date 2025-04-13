@@ -61,7 +61,7 @@
       grid-template-columns: repeat(7, 50px);
       gap: 8px;
       justify-content: center;
-      margin-bottom: 50px;
+      margin-bottom: 30px;
     }
 
     .day-label {
@@ -153,17 +153,180 @@
 
   <h1>Météo</h1>
   <div class="calendar" id="calendar"></div>
+
   <div class="battery-selector" id="batterySelector">
     <img src="assets/icons/battery-empty.svg" class="battery-icon" data-level="0" title="Vide">
     <img src="assets/icons/battery-half.svg" class="battery-icon" data-level="1" title="Moyenne">
     <img src="assets/icons/battery-full.svg" class="battery-icon" data-level="2" title="Pleine">
   </div>
+
   <div class="chart-container">
     <canvas id="moodChart"></canvas>
   </div>
+
   <div class="battery-line" id="batteryLine"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- le script reste inchangé car déjà complet dans la version précédente -->
+  <script>
+    const moods = ['😐', '😊', '😞'];
+    const moodScores = { '😊': 1, '😐': 0, '😞': -1 };
+    const monthsShort = ['jan', 'fév', 'mar', 'avr', 'mai', 'juin', 'juil', 'aoû', 'sep', 'oct', 'nov', 'déc'];
+
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const key = `mood-tracker-${year}-${String(month+1).padStart(2, '0')}`;
+    const batteryKey = `${key}-battery`;
+
+    const calendar = document.getElementById("calendar");
+    const batteryLine = document.getElementById("batteryLine");
+    const batterySelector = document.getElementById("batterySelector");
+    let selectedBatteryLevel = null;
+
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
+    const batteries = JSON.parse(localStorage.getItem(batteryKey) || '{}');
+
+    batterySelector.addEventListener("click", (e) => {
+      if (e.target.classList.contains("battery-icon")) {
+        document.querySelectorAll(".battery-icon").forEach(icon => icon.classList.remove("selected"));
+        e.target.classList.add("selected");
+        selectedBatteryLevel = parseInt(e.target.dataset.level);
+      }
+    });
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const dayLabels = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+    dayLabels.forEach(day => {
+      const label = document.createElement("div");
+      label.className = "day-label";
+      label.innerText = day;
+      calendar.appendChild(label);
+    });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const startDay = (firstDay + 6) % 7;
+    for (let i = 0; i < startDay; i++) {
+      const empty = document.createElement("div");
+      calendar.appendChild(empty);
+    }
+
+    for (let i = 1; i <= daysInMonth; i++) {
+      const cell = document.createElement("div");
+      cell.className = "day";
+      cell.dataset.day = i;
+
+      const moodSpan = document.createElement("div");
+      moodSpan.innerText = stored[i] || '';
+
+      const number = document.createElement("div");
+      number.className = "day-number";
+      number.innerText = i;
+
+      cell.appendChild(moodSpan);
+      cell.appendChild(number);
+
+      cell.addEventListener("click", () => {
+        const current = moods.indexOf(moodSpan.innerText);
+        const next = (current + 1) % moods.length;
+        const mood = moods[next];
+        moodSpan.innerText = mood;
+        stored[i] = mood;
+        localStorage.setItem(key, JSON.stringify(stored));
+
+        if (selectedBatteryLevel !== null) {
+          batteries[i] = selectedBatteryLevel;
+          localStorage.setItem(batteryKey, JSON.stringify(batteries));
+        }
+
+        updateChart();
+        updateBatteries();
+      });
+
+      calendar.appendChild(cell);
+    }
+
+    const ctx = document.getElementById("moodChart").getContext("2d");
+    let moodChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          label: 'Humeur',
+          data: [],
+          fill: false,
+          borderColor: '#ffffff',
+          tension: 0.3,
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#000000',
+          pointRadius: 5,
+          pointHoverRadius: 7
+        }]
+      },
+      options: {
+        responsive: true,
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            min: -1,
+            max: 1,
+            ticks: {
+              color: '#ffffff',
+              stepSize: 1,
+              callback: val => val === 1 ? '😊' : val === 0 ? '😐' : '😞'
+            },
+            grid: {
+              color: 'rgba(255,255,255,0.2)'
+            }
+          },
+          x: {
+            ticks: {
+              color: '#ffffff'
+            },
+            grid: {
+              color: 'rgba(255,255,255,0.1)'
+            }
+          }
+        }
+      }
+    });
+
+    function updateChart() {
+      const labels = [];
+      const data = [];
+      for (let i = 1; i <= daysInMonth; i++) {
+        if (stored[i]) {
+          labels.push(`${i} ${monthsShort[month]}`);
+          data.push(moodScores[stored[i]]);
+        }
+      }
+      moodChart.data.labels = labels;
+      moodChart.data.datasets[0].data = data;
+      moodChart.update();
+    }
+
+    function updateBatteries() {
+      batteryLine.innerHTML = '';
+      for (let i = 1; i <= daysInMonth; i++) {
+        if (stored[i] && batteries[i] !== undefined) {
+          const icon = document.createElement("img");
+          icon.src = `assets/icons/battery-${batteries[i] === 0 ? 'empty' : batteries[i] === 1 ? 'half' : 'full'}.svg`;
+          icon.className = "battery-svg";
+          batteryLine.appendChild(icon);
+        }
+      }
+    }
+
+    updateChart();
+    updateBatteries();
+  </script>
 </body>
 </html>
