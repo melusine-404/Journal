@@ -16,48 +16,41 @@
   <style>
     body {
       background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
-  background-size: cover;
+      background-size: cover;
       font-family: 'Jackal Holiday', cursive;
       padding: 40px;
       margin: 0;
+      text-align: center;
+      color: white;
     }
 
     h1 {
-      text-align: center;
-      font-size: 3em;
+      font-size: 3.5em;
       color: white;
       margin-bottom: 40px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
     }
-    
-    body {
-  background: url('assets/icons/accueilmeteo.jpg') no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Jackal Holiday Italic Outline';
-  src: url('fonts/JackalHolidayItalicOutline.ttf') format('truetype');
-  text-align: center;
-  padding: 20px;
-}
-    
-    h1 {
-      margin-bottom: 20px;
-    }
+
     .calendar {
       display: grid;
       grid-template-columns: repeat(7, 50px);
       gap: 8px;
       justify-content: center;
-      margin-bottom: 40px;
+      margin-bottom: 50px;
     }
+
     .day-label {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: bold;
-      color: #333;
+      color: #fff;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
     }
+
     .day {
       width: 50px;
       height: 50px;
-      border: 1px dashed #aaa;
-      background: #fffdf6;
+      border: 1px dashed #ccc;
+      background: rgba(255,255,255,0.9);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -65,32 +58,42 @@
       font-size: 20px;
       transition: transform 0.2s;
       flex-direction: column;
+      border-radius: 10px;
     }
+
     .day:hover {
       transform: scale(1.1);
     }
+
     .day-number {
       font-size: 12px;
       color: #888;
     }
+
     .chart-container {
       width: 90%;
-      max-width: 600px;
-      margin: 40px auto;
-      background: #fffefb;
-      border: 1px dashed #aaa;
-      padding: 20px;
-      border-radius: 12px;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 30px;
+    }
+
+    canvas {
+      background: transparent !important;
     }
   </style>
 </head>
 <body>
+
   <h1>Météo</h1>
+
   <div class="calendar" id="calendar"></div>
 
   <div class="chart-container">
     <canvas id="moodChart"></canvas>
   </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
     if (localStorage.getItem("melusine-unlocked") !== "true") {
@@ -161,25 +164,44 @@
           label: 'Humeur',
           data: [],
           fill: false,
-          borderColor: '#7b8e7b',
+          borderColor: '#ffffff',
           tension: 0.3,
-          pointBackgroundColor: '#555'
+          pointBackgroundColor: '#ffffff',
+          pointBorderColor: '#000000',
+          pointRadius: 5,
+          pointHoverRadius: 7
         }]
       },
       options: {
         responsive: true,
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
+        },
         plugins: {
-  legend: {
-    display: false
-  }
-},
+          legend: {
+            display: false
+          }
+        },
         scales: {
           y: {
             min: -1,
             max: 1,
             ticks: {
+              color: '#ffffff',
               stepSize: 1,
               callback: val => val === 1 ? '😊' : val === 0 ? '😐' : '😞'
+            },
+            grid: {
+              color: 'rgba(255,255,255,0.2)'
+            }
+          },
+          x: {
+            ticks: {
+              color: '#ffffff'
+            },
+            grid: {
+              color: 'rgba(255,255,255,0.1)'
             }
           }
         }
@@ -206,5 +228,6 @@
 
     updateChart();
   </script>
+
 </body>
 </html>
