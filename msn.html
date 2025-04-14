@@ -1,225 +1,285 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>MSN Messenger 2007 - Revival</title>
+  <meta charset="UTF-8" />
+  <title>MSN 2007 - Journal Intime</title>
   <style>
     body {
+      background: #dfefff;
+      font-family: Tahoma, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #c7d7eb;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
     }
-    .container {
+
+    .msn-window {
+      width: 600px;
+      height: 500px;
+      background: #fff;
+      border: 2px solid #88a;
+      border-radius: 6px;
+      box-shadow: 4px 4px 10px #aaa;
+      position: relative;
+      margin: 50px auto;
+      overflow: hidden;
+    }
+
+    .msn-header {
+      background: linear-gradient(to right, #c3daf9, #eef4fc);
+      padding: 4px 8px;
       display: flex;
-      height: 100vh;
-    }
-    .sidebar {
-      width: 270px;
-      background: #f3f6fc;
-      border-right: 2px solid #7ca8d8;
-      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
-    }
-    .sidebar-header {
-      background: linear-gradient(to right, #9bbce3, #c5dbf5);
-      padding: 6px 10px;
-      font-weight: bold;
-      color: #1f3f7f;
-      font-size: 13px;
-    }
-    .tab {
-      padding: 8px 10px;
-      font-weight: bold;
-      background: #dce8f7;
-      cursor: pointer;
-      border-bottom: 1px solid #ccc;
-    }
-    .tab:hover {
-      background-color: #eaf1fc;
-    }
-    .contact-group {
-      display: none;
-      flex-direction: column;
-      padding: 10px;
-    }
-    .contact {
-      margin-bottom: 6px;
-      cursor: pointer;
-    }
-    .contact:hover {
-      text-decoration: underline;
-    }
-    .chat-window {
-      flex: 1;
-      display: none;
-      flex-direction: column;
-      background-color: #ffffff;
-      border-left: 2px solid #7ca8d8;
-    }
-    .chat-header {
-      background: linear-gradient(to right, #d3d9f1, #eceef8);
-      padding: 6px 10px;
-      font-weight: bold;
-      color: #333;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 14px;
+      border-bottom: 1px solid #aac;
     }
-    .chat-controls div {
-      width: 14px;
-      height: 14px;
-      background-color: #ccc;
+
+    .msn-header .window-buttons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .msn-header button {
+      width: 20px;
+      height: 20px;
+      font-size: 14px;
+      background: #eee;
+      border: 1px solid #aaa;
+      cursor: pointer;
+    }
+
+    .msn-toolbar {
+      background: #eef;
+      padding: 4px 8px;
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid #aac;
+    }
+
+    .msn-chat-area {
+      display: flex;
+      height: 100%;
+    }
+
+    .msn-sidebar {
+      width: 120px;
+      border-right: 1px solid #aac;
+      background: #f5faff;
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .msn-contact {
+      margin: 10px 0;
+      cursor: pointer;
+    }
+
+    .msn-chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .msn-avatar-section {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      width: 100px;
       text-align: center;
-      line-height: 14px;
-      font-size: 12px;
-      margin-left: 4px;
+    }
+
+    .msn-avatar-section img {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      border: 2px solid #ccd;
       cursor: pointer;
     }
-    .chat-content {
+
+    .msn-messages {
       flex: 1;
       padding: 10px;
-      font-size: 13px;
+      font-size: 12px;
       overflow-y: auto;
+      background: #fff;
     }
-    .chat-input {
-      border-top: 1px solid #ccc;
-      background-color: #f0f0f0;
-      padding: 5px;
+
+    .msn-input-bar {
+      border-top: 1px solid #aac;
+      padding: 6px;
+      background: #f9f9ff;
     }
-    .chat-input .bar {
+
+    .msn-input-bar input {
+      width: 75%;
+      padding: 4px;
+      font-size: 12px;
+    }
+
+    .msn-buttons {
+      margin-top: 4px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 8px;
+    }
+
+    .msn-buttons button {
+      padding: 2px 6px;
       font-size: 12px;
-      padding-bottom: 4px;
+      background: #e0ecff;
+      border: 1px solid #aac;
+      cursor: pointer;
     }
-    .chat-input .bar button {
-      margin-right: 5px;
-      font-size: 12px;
+
+    .message {
+      margin-bottom: 5px;
     }
-    .chat-input textarea {
-      width: 100%;
-      height: 60px;
-      resize: none;
-      font-family: Segoe UI;
-      font-size: 13px;
-    }
-    .message-block {
-      margin-bottom: 10px;
-    }
+
     .message-time {
+      color: #777;
       font-size: 10px;
-      color: #888;
+    }
+
+    .wizz {
+      animation: shake 0.3s ease-in-out 2;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-4px, 2px); }
+      50% { transform: translate(4px, -2px); }
+      75% { transform: translate(-2px, 2px); }
+      100% { transform: translate(0, 0); }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="sidebar">
-      <div class="sidebar-header">Windows Live Messenger</div>
-      <div class="tab" onclick="showTab('reves')">Rêves</div>
-      <div class="tab" onclick="showTab('souvenirs')">Souvenirs</div>
-      <div class="tab" onclick="showTab('coleres')">Colères</div>
 
-      <div id="reves" class="contact-group">
-        <div class="contact" onclick="openChat('Reves', 'Ancien rêve encore revenu')">Ancien rêve encore revenu</div>
-        <div class="contact" onclick="openChat('Reves', 'Un avion étrange au-dessus de la maison')">Un avion étrange...</div>
-      </div>
-      <div id="souvenirs" class="contact-group">
-        <div class="contact" onclick="openChat('Souvenirs', 'Les vacances de 2005')">Les vacances de 2005</div>
-      </div>
-      <div id="coleres" class="contact-group">
-        <div class="contact" onclick="openChat('Colères', 'Dispute au lycée')">Dispute au lycée</div>
-      </div>
-    </div>
-
-    <div class="chat-window" id="chat-window">
-      <div class="chat-header">
-        <span id="chat-title">Discussion</span>
-        <div class="chat-controls">
-          <div onclick="minimizeChat()">-</div>
-          <div onclick="maximizeChat()">☐</div>
-          <div onclick="closeChat()">×</div>
-        </div>
-      </div>
-      <div class="chat-content" id="chat-content"></div>
-      <div class="chat-input">
-        <div class="bar">
-          <div>
-            <button onclick="fontPopup()">Font</button>
-            <button onclick="emojiInsert('😊')">Emoji</button>
-            <button onclick="emojiInsert('<img src=\'https://i.imgur.com/BHZyVDM.gif\'>')">Emoji animés</button>
-            <button onclick="attachFile()">📎</button>
-            <button onclick="sendWizz()">Wizz ⚡</button>
-          </div>
-          <button onclick="sendMessage()">Send</button>
-        </div>
-        <textarea id="msg"></textarea>
-      </div>
+<div class="msn-window" id="chatWindow">
+  <div class="msn-header">
+    <span>MSN Messenger - Journal Intime</span>
+    <div class="window-buttons">
+      <button onclick="minimizeWindow()">–</button>
+      <button onclick="maximizeWindow()">☐</button>
+      <button onclick="closeWindow()">×</button>
     </div>
   </div>
 
-  <script>
-    function showTab(id) {
-      document.querySelectorAll('.contact-group').forEach(g => g.style.display = 'none');
-      document.getElementById(id).style.display = 'flex';
-    }
+  <div class="msn-toolbar">
+    <span>Invite</span>
+    <span>Send Files</span>
+    <span>Webcam</span>
+    <span>Audio</span>
+    <span>Games</span>
+  </div>
 
-    function openChat(tab, name) {
-      document.getElementById('chat-window').style.display = 'flex';
-      document.getElementById('chat-title').textContent = `${tab} > ${name}`;
-      document.getElementById('chat-content').innerHTML = '';
-      const saved = localStorage.getItem(tab + '-' + name);
-      if (saved) {
-        document.getElementById('chat-content').innerHTML = saved;
-      }
-      document.getElementById('chat-window').dataset.context = tab + '-' + name;
-    }
+  <div class="msn-chat-area">
+    <div class="msn-sidebar">
+      <div class="msn-contact">Rêves</div>
+      <div class="msn-contact">Souvenirs</div>
+      <div class="msn-contact">Colères</div>
+    </div>
 
-    function sendMessage() {
-      const text = document.getElementById('msg').value.trim();
-      if (!text) return;
+    <div class="msn-chat">
+      <div class="msn-avatar-section">
+        <img src="https://i.imgur.com/ABEu81D.png" alt="avatar" onclick="changeAvatar()" />
+      </div>
+      <div class="msn-messages" id="messages"></div>
+      <div class="msn-input-bar">
+        <input type="text" id="userInput" placeholder="Tape ton message ici..." />
+        <div class="msn-buttons">
+          <button onclick="changeFont()">Font</button>
+          <button onclick="insertEmoji()">😊</button>
+          <button onclick="insertAnimatedEmoji()">😜</button>
+          <button onclick="attachFile()">📎</button>
+          <button onclick="sendWizz()">Wizz</button>
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<audio id="soundSend" src="https://www.myinstants.com/media/sounds/msn-msg.mp3"></audio>
+<audio id="soundWizz" src="https://www.myinstants.com/media/sounds/wizz.mp3"></audio>
+
+<script>
+  const msgContainer = document.getElementById("messages");
+  const input = document.getElementById("userInput");
+
+  function sendMessage() {
+    const text = input.value.trim();
+    if (text !== "") {
       const now = new Date();
-      const time = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-      const msg = `<div class='message-block'><strong>Toi :</strong> ${text}<br><span class='message-time'>${time}</span></div>`;
-      const content = document.getElementById('chat-content');
-      content.innerHTML += msg;
-      document.getElementById('msg').value = '';
-      const context = document.getElementById('chat-window').dataset.context;
-      localStorage.setItem(context, content.innerHTML);
-      new Audio('https://notificationsounds.com/notification-sounds/you-have-a-new-message-1322/download/mp3').play();
+      const msg = document.createElement("div");
+      msg.classList.add("message");
+      msg.innerHTML = `<span>${text}</span><div class="message-time">${now.toLocaleString()}</div>`;
+      msgContainer.appendChild(msg);
+      input.value = "";
+      document.getElementById("soundSend").play();
+      saveMessages();
     }
+  }
 
-    function emojiInsert(char) {
-      document.getElementById('msg').value += char;
-    }
+  function sendWizz() {
+    document.getElementById("chatWindow").classList.add("wizz");
+    setTimeout(() => {
+      document.getElementById("chatWindow").classList.remove("wizz");
+    }, 600);
+    document.getElementById("soundWizz").play();
+  }
 
-    function attachFile() {
-      alert('Fonction à venir : ajout de fichier 📎');
-    }
+  function saveMessages() {
+    localStorage.setItem("journalMSN", msgContainer.innerHTML);
+  }
 
-    function fontPopup() {
-      alert('Fonction à venir : choix de police ✍️');
-    }
+  function loadMessages() {
+    const saved = localStorage.getItem("journalMSN");
+    if (saved) msgContainer.innerHTML = saved;
+  }
 
-    function sendWizz() {
-      const chat = document.getElementById('chat-window');
-      chat.classList.add('shake');
-      new Audio('https://www.myinstants.com/media/sounds/msn_nudge.mp3').play();
-      setTimeout(() => chat.classList.remove('shake'), 800);
-    }
+  function changeFont() {
+    alert("Choix de police bientôt dispo !");
+  }
 
-    function closeChat() {
-      document.getElementById('chat-window').style.display = 'none';
-    }
+  function insertEmoji() {
+    input.value += " 😊";
+  }
 
-    function minimizeChat() {
-      document.getElementById('chat-window').style.height = '40px';
-    }
+  function insertAnimatedEmoji() {
+    input.value += " 😜";
+  }
 
-    function maximizeChat() {
-      document.getElementById('chat-window').style.height = '540px';
+  function attachFile() {
+    alert("Ajout de fichiers/images bientôt !");
+  }
+
+  function minimizeWindow() {
+    document.getElementById("chatWindow").style.display = "none";
+  }
+
+  function maximizeWindow() {
+    document.getElementById("chatWindow").style.width = "100%";
+    document.getElementById("chatWindow").style.height = "100vh";
+  }
+
+  function closeWindow() {
+    saveMessages();
+    document.getElementById("chatWindow").style.display = "none";
+  }
+
+  function changeAvatar() {
+    const url = prompt("Colle ici l’URL de ton nouvel avatar :");
+    if (url) {
+      document.querySelector(".msn-avatar-section img").src = url;
     }
-  </script>
+  }
+
+  window.onload = loadMessages;
+</script>
+
 </body>
 </html>
+
