@@ -2,18 +2,15 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <title>Vinyle Spotify du Mois</title>
+  <title>Vinyle Spotify</title>
   <style>
     body {
       margin: 0;
       background: #111;
-      color: white;
-      font-family: sans-serif;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
+      height: 100vh;
     }
 
     .vinyle-container {
@@ -24,7 +21,7 @@
       background: radial-gradient(circle, #333 40%, #000 70%);
       animation: spin 12s linear infinite;
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.1);
-      margin-bottom: 20px;
+      cursor: pointer;
     }
 
     .cover {
@@ -38,53 +35,36 @@
       border: 3px solid white;
       object-fit: cover;
       box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      pointer-events: none;
+    }
+
+    iframe.spotify {
+      display: none;
     }
 
     @keyframes spin {
       from { transform: rotate(0deg); }
       to   { transform: rotate(360deg); }
     }
-
-    iframe.spotify {
-      width: 300px;
-      height: 80px;
-      border-radius: 12px;
-      border: none;
-      margin-top: 10px;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #1DB954;
-      color: white;
-      cursor: pointer;
-    }
-
   </style>
 </head>
 <body>
 
-  <h2>💿 Vinyle Spotify du Mois</h2>
-
-  <div class="vinyle-container">
+  <div class="vinyle-container" id="vinyle">
     <img id="album-cover" class="cover" src="" alt="Pochette album" />
   </div>
 
   <iframe id="spotify-player" class="spotify" src="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
 
-  <button id="login-button">Se connecter à Spotify</button>
-
   <script>
     const clientId = "ef1a644e04e24e83a724aef89f69709f";
     const redirectUri = "https://melusine-404.github.io/Journal/vinyle.html";
     const playlistId = "3gjsQDpPnr98Qlj7C8HUty";
-    const scopes = "user-top-read playlist-read-private";
+    const scopes = "playlist-read-private";
 
-    document.getElementById("login-button").addEventListener("click", () => {
+    const vinyle = document.getElementById("vinyle");
+
+    vinyle.addEventListener("click", () => {
       const authUrl = "https://accounts.spotify.com/authorize" +
         `?client_id=${clientId}` +
         "&response_type=token" +
@@ -110,6 +90,7 @@
 
         document.getElementById("album-cover").src = coverUrl;
         document.getElementById("spotify-player").src = `https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator&theme=0`;
+        document.getElementById("spotify-player").style.display = "block";
       } catch (e) {
         console.error("Erreur récupération Spotify :", e);
       }
@@ -117,7 +98,6 @@
 
     const token = getAccessTokenFromUrl();
     if (token) {
-      document.getElementById("login-button").style.display = "none";
       fetchFirstTrack(token);
     }
   </script>
