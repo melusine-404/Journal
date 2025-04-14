@@ -10,19 +10,51 @@
       background-color: #c7d7eb;
       font-family: 'Segoe UI', Tahoma, sans-serif;
     }
-    .chat-window {
-      position: absolute;
-      top: 80px;
-      left: 120px;
-      width: 500px;
-      height: 540px;
-      background: url('https://i.imgur.com/s6bMZtw.jpg') no-repeat center center;
-      background-size: cover;
-      border: 2px solid #7ca8d8;
-      box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
+    .container {
       display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 270px;
+      background: #f3f6fc;
+      border-right: 2px solid #7ca8d8;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+    }
+    .sidebar-header {
+      background: linear-gradient(to right, #9bbce3, #c5dbf5);
+      padding: 6px 10px;
+      font-weight: bold;
+      color: #1f3f7f;
+      font-size: 13px;
+    }
+    .tab {
+      padding: 8px 10px;
+      font-weight: bold;
+      background: #dce8f7;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+    }
+    .tab:hover {
+      background-color: #eaf1fc;
+    }
+    .contact-group {
+      display: none;
       flex-direction: column;
-      z-index: 10;
+      padding: 10px;
+    }
+    .contact {
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .contact:hover {
+      text-decoration: underline;
+    }
+    .chat-window {
+      flex: 1;
+      display: none;
+      flex-direction: column;
+      background-color: #ffffff;
+      border-left: 2px solid #7ca8d8;
     }
     .chat-header {
       background: linear-gradient(to right, #d3d9f1, #eceef8);
@@ -32,19 +64,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      cursor: move;
     }
-    .chat-header .window-controls {
-      display: flex;
-      gap: 6px;
-    }
-    .chat-header .window-controls div {
+    .chat-controls div {
       width: 14px;
       height: 14px;
       background-color: #ccc;
       text-align: center;
       line-height: 14px;
       font-size: 12px;
+      margin-left: 4px;
       cursor: pointer;
     }
     .chat-content {
@@ -52,7 +80,6 @@
       padding: 10px;
       font-size: 13px;
       overflow-y: auto;
-      background-color: rgba(255,255,255,0.8);
     }
     .chat-input {
       border-top: 1px solid #ccc;
@@ -63,12 +90,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 5px 0;
       font-size: 12px;
+      padding-bottom: 4px;
     }
-    .chat-input .bar span {
-      display: flex;
-      gap: 10px;
+    .chat-input .bar button {
+      margin-right: 5px;
+      font-size: 12px;
     }
     .chat-input textarea {
       width: 100%;
@@ -77,125 +104,121 @@
       font-family: Segoe UI;
       font-size: 13px;
     }
-    .chat-input button {
-      margin-top: 5px;
-      padding: 4px 10px;
-      font-size: 12px;
-      background-color: #8db2e3;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
     .message-block {
-      margin: 5px 0;
+      margin-bottom: 10px;
     }
     .message-time {
       font-size: 10px;
       color: #888;
     }
-    .shake {
-      animation: shake 0.5s ease-in-out;
-    }
-    @keyframes shake {
-      0% { transform: translate(2px, 1px); }
-      20% { transform: translate(-2px, -1px); }
-      40% { transform: translate(3px, 2px); }
-      60% { transform: translate(-1px, -2px); }
-      80% { transform: translate(2px, 1px); }
-      100% { transform: translate(0px, 0px); }
-    }
   </style>
 </head>
 <body>
-  <div class="chat-window" id="chat-window">
-    <div class="chat-header" onmousedown="dragStart(event, this.parentElement)">
-      Rêves avec Toi
-      <div class="window-controls">
-        <div onclick="minimizeWindow()">-</div>
-        <div onclick="maximizeWindow()">☐</div>
-        <div onclick="closeWindow()">×</div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="sidebar-header">Windows Live Messenger</div>
+      <div class="tab" onclick="showTab('reves')">Rêves</div>
+      <div class="tab" onclick="showTab('souvenirs')">Souvenirs</div>
+      <div class="tab" onclick="showTab('coleres')">Colères</div>
+
+      <div id="reves" class="contact-group">
+        <div class="contact" onclick="openChat('Reves', 'Ancien rêve encore revenu')">Ancien rêve encore revenu</div>
+        <div class="contact" onclick="openChat('Reves', 'Un avion étrange au-dessus de la maison')">Un avion étrange...</div>
+      </div>
+      <div id="souvenirs" class="contact-group">
+        <div class="contact" onclick="openChat('Souvenirs', 'Les vacances de 2005')">Les vacances de 2005</div>
+      </div>
+      <div id="coleres" class="contact-group">
+        <div class="contact" onclick="openChat('Colères', 'Dispute au lycée')">Dispute au lycée</div>
       </div>
     </div>
-    <div class="chat-content" id="chat-content"></div>
-    <div class="chat-input">
-      <div class="bar">
-        <span>
-          Font ✏ Emoji 🙂 Emoji animés 🔥 📎 Wizz ⚡
-        </span>
-        <button onclick="sendMsg()">Send</button>
+
+    <div class="chat-window" id="chat-window">
+      <div class="chat-header">
+        <span id="chat-title">Discussion</span>
+        <div class="chat-controls">
+          <div onclick="minimizeChat()">-</div>
+          <div onclick="maximizeChat()">☐</div>
+          <div onclick="closeChat()">×</div>
+        </div>
       </div>
-      <textarea id="msg"></textarea>
+      <div class="chat-content" id="chat-content"></div>
+      <div class="chat-input">
+        <div class="bar">
+          <div>
+            <button onclick="fontPopup()">Font</button>
+            <button onclick="emojiInsert('😊')">Emoji</button>
+            <button onclick="emojiInsert('<img src=\'https://i.imgur.com/BHZyVDM.gif\'>')">Emoji animés</button>
+            <button onclick="attachFile()">📎</button>
+            <button onclick="sendWizz()">Wizz ⚡</button>
+          </div>
+          <button onclick="sendMessage()">Send</button>
+        </div>
+        <textarea id="msg"></textarea>
+      </div>
     </div>
   </div>
 
-  <audio id="sound-ding" src="https://notificationsounds.com/notification-sounds/you-have-a-new-message-1322/download/mp3"></audio>
-  <audio id="sound-wizz" src="https://www.myinstants.com/media/sounds/msn_nudge.mp3"></audio>
-
   <script>
-    function sendMsg() {
+    function showTab(id) {
+      document.querySelectorAll('.contact-group').forEach(g => g.style.display = 'none');
+      document.getElementById(id).style.display = 'flex';
+    }
+
+    function openChat(tab, name) {
+      document.getElementById('chat-window').style.display = 'flex';
+      document.getElementById('chat-title').textContent = `${tab} > ${name}`;
+      document.getElementById('chat-content').innerHTML = '';
+      const saved = localStorage.getItem(tab + '-' + name);
+      if (saved) {
+        document.getElementById('chat-content').innerHTML = saved;
+      }
+      document.getElementById('chat-window').dataset.context = tab + '-' + name;
+    }
+
+    function sendMessage() {
       const text = document.getElementById('msg').value.trim();
       if (!text) return;
       const now = new Date();
       const time = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
-      const msgBlock = document.createElement('div');
-      msgBlock.className = 'message-block';
-      msgBlock.innerHTML = `<strong>Toi :</strong> ${text}<br><span class="message-time">${time}</span>`;
-      document.getElementById('chat-content').appendChild(msgBlock);
+      const msg = `<div class='message-block'><strong>Toi :</strong> ${text}<br><span class='message-time'>${time}</span></div>`;
+      const content = document.getElementById('chat-content');
+      content.innerHTML += msg;
       document.getElementById('msg').value = '';
-      document.getElementById('sound-ding').play();
-      saveToStorage();
+      const context = document.getElementById('chat-window').dataset.context;
+      localStorage.setItem(context, content.innerHTML);
+      new Audio('https://notificationsounds.com/notification-sounds/you-have-a-new-message-1322/download/mp3').play();
     }
 
-    function wizz() {
+    function emojiInsert(char) {
+      document.getElementById('msg').value += char;
+    }
+
+    function attachFile() {
+      alert('Fonction à venir : ajout de fichier 📎');
+    }
+
+    function fontPopup() {
+      alert('Fonction à venir : choix de police ✍️');
+    }
+
+    function sendWizz() {
       const chat = document.getElementById('chat-window');
       chat.classList.add('shake');
-      document.getElementById('sound-wizz').play();
-      setTimeout(() => chat.classList.remove('shake'), 1000);
+      new Audio('https://www.myinstants.com/media/sounds/msn_nudge.mp3').play();
+      setTimeout(() => chat.classList.remove('shake'), 800);
     }
 
-    function closeWindow() {
-      saveToStorage();
+    function closeChat() {
       document.getElementById('chat-window').style.display = 'none';
     }
 
-    function minimizeWindow() {
+    function minimizeChat() {
       document.getElementById('chat-window').style.height = '40px';
     }
 
-    function maximizeWindow() {
+    function maximizeChat() {
       document.getElementById('chat-window').style.height = '540px';
-    }
-
-    function saveToStorage() {
-      localStorage.setItem('msn-chat-reves', document.getElementById('chat-content').innerHTML);
-    }
-
-    function restoreFromStorage() {
-      const saved = localStorage.getItem('msn-chat-reves');
-      if (saved) {
-        document.getElementById('chat-content').innerHTML = saved;
-      }
-    }
-    restoreFromStorage();
-
-    // Drag window
-    let dragObj;
-    function dragStart(e, el) {
-      dragObj = el;
-      offsetX = e.clientX - el.getBoundingClientRect().left;
-      offsetY = e.clientY - el.getBoundingClientRect().top;
-      document.addEventListener('mousemove', dragMove);
-      document.addEventListener('mouseup', dragEnd);
-    }
-    function dragMove(e) {
-      if (!dragObj) return;
-      dragObj.style.left = (e.clientX - offsetX) + 'px';
-      dragObj.style.top = (e.clientY - offsetY) + 'px';
-    }
-    function dragEnd() {
-      document.removeEventListener('mousemove', dragMove);
-      document.removeEventListener('mouseup', dragEnd);
-      dragObj = null;
     }
   </script>
 </body>
