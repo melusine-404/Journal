@@ -1,7 +1,7 @@
 // == MELUSINE WIDGET ==
 
 document.addEventListener("DOMContentLoaded", () => {
-  const proxyURL = "https://TON-SITE.netlify.app/.netlify/functions/proxy"; // ← à modifier
+  const proxyURL = "https://velvety-fox-68a2ba.netlify.app/.netlify/functions/proxy"; // ← à modifier
 
   // Injection HTML du widget
   const melusineHTML = `
