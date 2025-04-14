@@ -2,139 +2,204 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>MSN Journal Intime</title>
+  <title>MSN Journal Intime - Revival 2007</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background: url('https://i.imgur.com/n5dSdKv.jpeg'); /* fond rétro */
-      font-family: Tahoma, sans-serif;
       margin: 0;
       padding: 0;
+      background: linear-gradient(to bottom right, #a5c8e1, #e3ecf5);
+      font-family: Segoe UI, Tahoma, sans-serif;
+      user-select: none;
     }
-    .msn-window {
+
+    /* MSN Main Window */
+    .msn-main {
+      position: fixed;
+      top: 40px;
+      left: 40px;
+      width: 300px;
+      background-color: #f1f6fb;
+      border: 2px solid #7aa5d8;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+    }
+    .msn-main-header {
+      background: linear-gradient(to right, #7aa5d8, #a6c6ec);
+      padding: 8px;
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+    }
+    .user-info img {
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+    .user-info .status {
+      font-size: 12px;
+      color: #444;
+    }
+    .contact-list {
+      padding: 10px;
+    }
+    .contact {
+      padding: 6px;
+      margin-bottom: 6px;
+      border-radius: 5px;
+      background-color: #ffffff;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .contact:hover {
+      background-color: #def;
+    }
+
+    /* MSN Chat Window */
+    .chat-window {
       position: absolute;
-      top: 60px;
-      left: 60px;
-      width: 350px;
+      top: 100px;
+      left: 360px;
+      width: 400px;
       height: 500px;
-      background: #e5ecf9;
-      border: 2px solid #4d7ab7;
-      box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+      background-color: #ffffff;
+      border: 2px solid #7aa5d8;
+      box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
     }
-    .msn-header {
-      background: linear-gradient(to right, #6396c9, #a1c4f4);
+    .chat-header {
+      background: linear-gradient(to right, #7aa5d8, #a6c6ec);
       padding: 8px;
       color: white;
       font-weight: bold;
       cursor: move;
     }
-    .chat-area {
-      flex-grow: 1;
+    .chat-body {
+      flex: 1;
       padding: 10px;
       overflow-y: auto;
-      background-color: white;
       font-size: 14px;
     }
-    .message {
-      margin-bottom: 10px;
-    }
-    .message.you { text-align: right; color: #003399; }
-    .message.msn { text-align: left; color: #990099; }
     .chat-input {
       padding: 8px;
       border-top: 1px solid #ccc;
-      background-color: #f4f4f4;
       display: flex;
       align-items: center;
       gap: 5px;
     }
     .chat-input textarea {
-      flex-grow: 1;
-      resize: none;
+      flex: 1;
       height: 50px;
+      resize: none;
     }
     .chat-input button {
-      background: #6396c9;
+      padding: 6px 10px;
+      background-color: #7aa5d8;
       color: white;
       border: none;
-      padding: 6px 10px;
       cursor: pointer;
     }
-    .sidebar {
-      position: fixed;
-      left: 20px;
-      top: 20px;
-      background: white;
-      border: 2px solid #4d7ab7;
-      padding: 10px;
-      width: 200px;
-      box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
-    }
-    .contact {
-      padding: 5px;
-      cursor: pointer;
-    }
-    .contact:hover {
-      background: #cce;
+    .message.you {
+      text-align: right;
+      margin: 5px 0;
+      color: #0057a3;
     }
     .shake {
-      animation: shake 0.3s infinite;
+      animation: shake 0.5s ease-in-out;
     }
     @keyframes shake {
-      0% { transform: translate(1px, 1px); }
-      20% { transform: translate(-1px, -2px); }
-      40% { transform: translate(-3px, 0px); }
-      60% { transform: translate(3px, 2px); }
-      80% { transform: translate(1px, -1px); }
-      100% { transform: translate(-1px, 2px); }
+      0% { transform: translate(2px, 1px); }
+      20% { transform: translate(-2px, -1px); }
+      40% { transform: translate(3px, 2px); }
+      60% { transform: translate(-1px, -2px); }
+      80% { transform: translate(2px, 1px); }
+      100% { transform: translate(0px, 0px); }
     }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h3>MSN Journal</h3>
-    <div class="contact" onclick="openWindow('reves')">Rêves</div>
-    <div class="contact" onclick="openWindow('souvenirs')">Souvenirs</div>
-    <div class="contact" onclick="openWindow('coleres')">Colères</div>
+  <div class="msn-main">
+    <div class="msn-main-header">Windows Live Messenger</div>
+    <div class="user-info">
+      <img src="https://i.imgur.com/Qs6G4aN.png" alt="avatar">
+      <div>
+        <div><strong>Toi</strong></div>
+        <div class="status">Disponible - mood: contemplatif.ve 🌙</div>
+      </div>
+    </div>
+    <div class="contact-list">
+      <div class="contact" onclick="openChat('reves')">Rêves</div>
+      <div class="contact" onclick="openChat('souvenirs')">Souvenirs</div>
+      <div class="contact" onclick="openChat('coleres')">Colères</div>
+    </div>
   </div>
 
   <script>
-    const openWindow = (id) => {
-      if (document.getElementById('win-' + id)) return;
-      const win = document.createElement('div');
-      win.className = 'msn-window';
-      win.id = 'win-' + id;
-      win.innerHTML = `
-        <div class="msn-header">${id.toUpperCase()}</div>
-        <div class="chat-area" id="chat-${id}"></div>
+    function openChat(id) {
+      if (document.getElementById('chat-' + id)) return;
+
+      const chat = document.createElement('div');
+      chat.className = 'chat-window';
+      chat.id = 'chat-' + id;
+
+      chat.innerHTML = `
+        <div class="chat-header" onmousedown="dragStart(event, this.parentElement)">${id.toUpperCase()} - Journal Intime</div>
+        <div class="chat-body" id="chat-body-${id}"></div>
         <div class="chat-input">
-          <textarea id="input-${id}"></textarea>
-          <button onclick="sendMessage('${id}')">Envoyer</button>
-          <button onclick="wizz('${id}')">Wizz!</button>
+          <textarea id="input-${id}" placeholder="Écris ici..."></textarea>
+          <button onclick="send('${id}')">Envoyer</button>
+          <button onclick="wizz('${id}')">Wizz</button>
         </div>
       `;
-      document.body.appendChild(win);
+
+      document.body.appendChild(chat);
     }
 
-    function sendMessage(id) {
+    function send(id) {
       const input = document.getElementById('input-' + id);
-      const msg = input.value.trim();
-      if (!msg) return;
-      const chat = document.getElementById('chat-' + id);
-      const div = document.createElement('div');
-      div.className = 'message you';
-      div.innerText = msg;
-      chat.appendChild(div);
+      const text = input.value.trim();
+      if (!text) return;
+      const msg = document.createElement('div');
+      msg.className = 'message you';
+      msg.innerText = text;
+      document.getElementById('chat-body-' + id).appendChild(msg);
       input.value = '';
-      chat.scrollTop = chat.scrollHeight;
     }
 
     function wizz(id) {
-      const win = document.getElementById('win-' + id);
-      win.classList.add('shake');
-      setTimeout(() => win.classList.remove('shake'), 1000);
+      const chat = document.getElementById('chat-' + id);
+      chat.classList.add('shake');
+      setTimeout(() => chat.classList.remove('shake'), 1000);
+    }
+
+    // Dragging functionality
+    let offsetX, offsetY, dragElement;
+
+    function dragStart(e, el) {
+      dragElement = el;
+      offsetX = e.clientX - el.getBoundingClientRect().left;
+      offsetY = e.clientY - el.getBoundingClientRect().top;
+      document.addEventListener('mousemove', dragMove);
+      document.addEventListener('mouseup', dragEnd);
+    }
+
+    function dragMove(e) {
+      if (!dragElement) return;
+      dragElement.style.left = (e.clientX - offsetX) + 'px';
+      dragElement.style.top = (e.clientY - offsetY) + 'px';
+    }
+
+    function dragEnd() {
+      document.removeEventListener('mousemove', dragMove);
+      document.removeEventListener('mouseup', dragEnd);
+      dragElement = null;
     }
   </script>
 </body>
