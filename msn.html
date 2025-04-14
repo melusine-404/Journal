@@ -2,98 +2,73 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>MSN Messenger 2007 - Journal Intime</title>
+  <title>MSN Messenger 2007 - Revival</title>
   <style>
     body {
       margin: 0;
       padding: 0;
       background-color: #c7d7eb;
-      font-family: Segoe UI, Tahoma, sans-serif;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
     }
-    .msn-main {
-      position: fixed;
-      top: 30px;
-      left: 30px;
-      width: 270px;
-      background: #f3f6fc;
-      border: 2px solid #7ca8d8;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-    }
-    .msn-header {
-      background: linear-gradient(to right, #9bbce3, #c5dbf5);
-      padding: 6px 10px;
-      font-weight: bold;
-      color: #1f3f7f;
-      font-size: 13px;
-    }
-    .profile-section {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #ccc;
-    }
-    .profile-section img {
-      width: 40px;
-      height: 40px;
-      border-radius: 5px;
-      margin-right: 10px;
-    }
-    .profile-text {
-      font-size: 12px;
-    }
-    .contact-list {
-      padding: 10px;
-    }
-    .contact {
-      padding: 4px;
-      border-bottom: 1px solid #ccc;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-    }
-    .contact img {
-      width: 20px;
-      height: 20px;
-      border-radius: 3px;
-      margin-right: 8px;
-    }
-    .contact:hover {
-      background-color: #e0edf8;
-    }
-
-    /* Chat window */
     .chat-window {
       position: absolute;
       top: 80px;
-      left: 320px;
-      width: 460px;
-      height: 500px;
-      background: url('https://i.imgur.com/s6bMZtw.jpg'); /* fond personnalisé */
+      left: 120px;
+      width: 500px;
+      height: 540px;
+      background: url('https://i.imgur.com/s6bMZtw.jpg') no-repeat center center;
       background-size: cover;
       border: 2px solid #7ca8d8;
+      box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
       display: flex;
       flex-direction: column;
-      box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
+      z-index: 10;
     }
     .chat-header {
       background: linear-gradient(to right, #d3d9f1, #eceef8);
       padding: 6px 10px;
       font-weight: bold;
       color: #333;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       cursor: move;
+    }
+    .chat-header .window-controls {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-header .window-controls div {
+      width: 14px;
+      height: 14px;
+      background-color: #ccc;
+      text-align: center;
+      line-height: 14px;
+      font-size: 12px;
+      cursor: pointer;
     }
     .chat-content {
       flex: 1;
       padding: 10px;
       font-size: 13px;
       overflow-y: auto;
-      background-color: rgba(255,255,255,0.7);
+      background-color: rgba(255,255,255,0.8);
     }
     .chat-input {
       border-top: 1px solid #ccc;
       background-color: #f0f0f0;
       padding: 5px;
+    }
+    .chat-input .bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      font-size: 12px;
+    }
+    .chat-input .bar span {
+      display: flex;
+      gap: 10px;
     }
     .chat-input textarea {
       width: 100%;
@@ -102,13 +77,8 @@
       font-family: Segoe UI;
       font-size: 13px;
     }
-    .chat-input .bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 5px 0;
-    }
     .chat-input button {
+      margin-top: 5px;
       padding: 4px 10px;
       font-size: 12px;
       background-color: #8db2e3;
@@ -116,76 +86,116 @@
       border: none;
       cursor: pointer;
     }
+    .message-block {
+      margin: 5px 0;
+    }
+    .message-time {
+      font-size: 10px;
+      color: #888;
+    }
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+    @keyframes shake {
+      0% { transform: translate(2px, 1px); }
+      20% { transform: translate(-2px, -1px); }
+      40% { transform: translate(3px, 2px); }
+      60% { transform: translate(-1px, -2px); }
+      80% { transform: translate(2px, 1px); }
+      100% { transform: translate(0px, 0px); }
+    }
   </style>
 </head>
 <body>
-  <div class="msn-main">
-    <div class="msn-header">Windows Live Messenger</div>
-    <div class="profile-section">
-      <img src="https://i.imgur.com/Qs6G4aN.png" alt="avatar">
-      <div class="profile-text">
-        <strong>Toi</strong><br>
-        mood: contemplatif.ve 🌙
+  <div class="chat-window" id="chat-window">
+    <div class="chat-header" onmousedown="dragStart(event, this.parentElement)">
+      Rêves avec Toi
+      <div class="window-controls">
+        <div onclick="minimizeWindow()">-</div>
+        <div onclick="maximizeWindow()">☐</div>
+        <div onclick="closeWindow()">×</div>
       </div>
     </div>
-    <div class="contact-list">
-      <div class="contact" onclick="openChat()">
-        <img src="https://i.imgur.com/CbWjJ1s.png"> Rêves
-      </div>
-      <div class="contact">
-        <img src="https://i.imgur.com/CbWjJ1s.png"> Souvenirs
-      </div>
-      <div class="contact">
-        <img src="https://i.imgur.com/CbWjJ1s.png"> Colères
-      </div>
-    </div>
-  </div>
-
-  <div class="chat-window" id="chat-window" style="display: none;">
-    <div class="chat-header" onmousedown="dragStart(event, this.parentElement)">Rêves avec Toi</div>
-    <div class="chat-content" id="chat-content">
-      <p><strong>Toi :</strong> Je suis revenu dans mon ancien rêve, encore une fois…</p>
-    </div>
+    <div class="chat-content" id="chat-content"></div>
     <div class="chat-input">
       <div class="bar">
-        <span style="font-size: 12px; color: #666;">Font 🖋 Emoji 🙂</span>
+        <span>
+          Font ✏ Emoji 🙂 Emoji animés 🔥 📎 Wizz ⚡
+        </span>
         <button onclick="sendMsg()">Send</button>
       </div>
       <textarea id="msg"></textarea>
     </div>
   </div>
 
+  <audio id="sound-ding" src="https://notificationsounds.com/notification-sounds/you-have-a-new-message-1322/download/mp3"></audio>
+  <audio id="sound-wizz" src="https://www.myinstants.com/media/sounds/msn_nudge.mp3"></audio>
+
   <script>
-    function openChat() {
-      document.getElementById('chat-window').style.display = 'flex';
-    }
     function sendMsg() {
-      const msg = document.getElementById('msg').value.trim();
-      if (!msg) return;
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>Toi :</strong> ${msg}`;
-      document.getElementById('chat-content').appendChild(p);
+      const text = document.getElementById('msg').value.trim();
+      if (!text) return;
+      const now = new Date();
+      const time = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+      const msgBlock = document.createElement('div');
+      msgBlock.className = 'message-block';
+      msgBlock.innerHTML = `<strong>Toi :</strong> ${text}<br><span class="message-time">${time}</span>`;
+      document.getElementById('chat-content').appendChild(msgBlock);
       document.getElementById('msg').value = '';
+      document.getElementById('sound-ding').play();
+      saveToStorage();
     }
 
-    // Drag functionality
-    let offsetX, offsetY, dragged;
+    function wizz() {
+      const chat = document.getElementById('chat-window');
+      chat.classList.add('shake');
+      document.getElementById('sound-wizz').play();
+      setTimeout(() => chat.classList.remove('shake'), 1000);
+    }
+
+    function closeWindow() {
+      saveToStorage();
+      document.getElementById('chat-window').style.display = 'none';
+    }
+
+    function minimizeWindow() {
+      document.getElementById('chat-window').style.height = '40px';
+    }
+
+    function maximizeWindow() {
+      document.getElementById('chat-window').style.height = '540px';
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('msn-chat-reves', document.getElementById('chat-content').innerHTML);
+    }
+
+    function restoreFromStorage() {
+      const saved = localStorage.getItem('msn-chat-reves');
+      if (saved) {
+        document.getElementById('chat-content').innerHTML = saved;
+      }
+    }
+    restoreFromStorage();
+
+    // Drag window
+    let dragObj;
     function dragStart(e, el) {
-      dragged = el;
+      dragObj = el;
       offsetX = e.clientX - el.getBoundingClientRect().left;
       offsetY = e.clientY - el.getBoundingClientRect().top;
       document.addEventListener('mousemove', dragMove);
       document.addEventListener('mouseup', dragEnd);
     }
     function dragMove(e) {
-      if (!dragged) return;
-      dragged.style.left = e.clientX - offsetX + 'px';
-      dragged.style.top = e.clientY - offsetY + 'px';
+      if (!dragObj) return;
+      dragObj.style.left = (e.clientX - offsetX) + 'px';
+      dragObj.style.top = (e.clientY - offsetY) + 'px';
     }
     function dragEnd() {
       document.removeEventListener('mousemove', dragMove);
       document.removeEventListener('mouseup', dragEnd);
-      dragged = null;
+      dragObj = null;
     }
   </script>
 </body>
