@@ -135,6 +135,21 @@
       80% { transform: translate(1px, -1px); }
       100% { transform: translate(-1px, 2px); }
     }
+
+    .close-btn {
+  float: right;
+  color: white;
+  font-weight: normal;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.close-btn:hover {
+  color: #ffdddd;
+}
+
+    
   </style>
 </head>
 <body>
@@ -152,14 +167,17 @@
       win.className = 'msn-window';
       win.id = 'win-' + id;
       win.innerHTML = `
-        <div class="msn-header">${id.toUpperCase()}</div>
-        <div class="chat-area" id="chat-${id}"></div>
-        <div class="chat-input">
-          <textarea id="input-${id}"></textarea>
-          <button onclick="sendMessage('${id}')">Envoyer</button>
-          <button onclick="wizz('${id}')">Wizz!</button>
-        </div>
-      `;
+  <div class="msn-header">
+    ${id.toUpperCase()}
+    <span class="close-btn" onclick="closeWindow('${id}')">✕</span>
+  </div>
+  <div class="chat-area" id="chat-${id}"></div>
+  <div class="chat-input">
+    <textarea id="input-${id}"></textarea>
+    <button onclick="sendMessage('${id}')">Envoyer</button>
+    <button onclick="wizz('${id}')">Wizz!</button>
+  </div>
+`;
       document.body.appendChild(win);
       makeDraggable(win); // ← Ajout ici
     };
@@ -204,6 +222,14 @@
         isDown = false;
       });
     }
+
+    function closeWindow(id) {
+  const win = document.getElementById('win-' + id);
+  if (win) {
+    win.remove();
+  }
+}
+
   </script>
 </body>
 </html>
