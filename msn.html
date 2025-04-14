@@ -200,8 +200,7 @@
       const div = document.createElement('div');
       div.className = 'message you';
       div.innerHTML = `<div>${msg}</div><div class="timestamp">${time}</div>`;
-  
-      div.innerText = msg;
+      
       chat.appendChild(div);
       input.value = '';
       chat.scrollTop = chat.scrollHeight;
