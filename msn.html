@@ -160,6 +160,175 @@
         </div>
       `;
       document.body.appendChild(win);
+      <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>MSN Journal Intime</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: url('https://i.imgur.com/n5dSdKv.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Tahoma, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      background: linear-gradient(to bottom, #f0f8ff, #d8e8fc);
+      border: 1px solid #a2c0e0;
+      padding: 10px;
+      width: 200px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.2);
+      border-radius: 6px;
+    }
+
+    .sidebar h3 {
+      font-size: 16px;
+      color: #305cab;
+      border-bottom: 1px solid #88a;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+    }
+
+    .contact {
+      padding: 6px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      color: #003399;
+      font-size: 13px;
+    }
+
+    .contact:hover {
+      background: #cde0fa;
+    }
+
+    .msn-window {
+      position: absolute;
+      top: 60px;
+      left: 60px;
+      width: 350px;
+      height: 500px;
+      background: linear-gradient(to bottom, #eaf2fb 0%, #d3e0f5 100%);
+      border: 2px solid #4d7ab7;
+      border-radius: 8px;
+      box-shadow: 4px 4px 15px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .msn-header {
+      background: linear-gradient(to right, #7faef5, #b4d1f8);
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 6px 10px;
+      cursor: move;
+    }
+
+    .chat-area {
+      flex-grow: 1;
+      padding: 10px;
+      background: #fff;
+      overflow-y: auto;
+      font-size: 13px;
+      line-height: 1.4em;
+    }
+
+    .message {
+      margin-bottom: 10px;
+    }
+
+    .message.you {
+      text-align: right;
+      color: #0055cc;
+    }
+
+    .message.msn {
+      text-align: left;
+      color: #990099;
+    }
+
+    .chat-input {
+      padding: 8px;
+      background-color: #f2f2ff;
+      border-top: 1px solid #aaa;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chat-input textarea {
+      flex-grow: 1;
+      resize: none;
+      height: 50px;
+      font-family: Tahoma, sans-serif;
+      font-size: 13px;
+      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #aaa;
+    }
+
+    .chat-input button {
+      background: linear-gradient(to bottom, #ffffff, #dbe8fc);
+      border: 1px solid #7ca5d7;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: #003399;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .shake {
+      animation: shake 0.3s infinite;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(1px, 1px); }
+      20% { transform: translate(-1px, -2px); }
+      40% { transform: translate(-3px, 0px); }
+      60% { transform: translate(3px, 2px); }
+      80% { transform: translate(1px, -1px); }
+      100% { transform: translate(-1px, 2px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h3>MSN Journal</h3>
+    <div class="contact" onclick="openWindow('reves')">Rêves</div>
+    <div class="contact" onclick="openWindow('souvenirs')">Souvenirs</div>
+    <div class="contact" onclick="openWindow('coleres')">Colères</div>
+  </div>
+
+  <script>
+    const openWindow = (id) => {
+      if (document.getElementById('win-' + id)) return;
+      const win = document.createElement('div');
+      win.className = 'msn-window';
+      win.id = 'win-' + id;
+      win.innerHTML = `
+        <div class="msn-header">${id.toUpperCase()}</div>
+        <div class="chat-area" id="chat-${id}"></div>
+        <div class="chat-input">
+          <textarea id="input-${id}"></textarea>
+          <button onclick="sendMessage('${id}')">Envoyer</button>
+          <button onclick="wizz('${id}')">Wizz!</button>
+        </div>
+      `;
+      document.body.appendChild(win);
+ makeDraggable(win); // 🟢 Active le déplacement de la fenêtre
+}
+  </script>
+</body>
+</html>
+
+
     }
 
     function sendMessage(id) {
@@ -180,6 +349,29 @@
       win.classList.add('shake');
       setTimeout(() => win.classList.remove('shake'), 1000);
     }
+
+    function makeDraggable(el) {
+  const header = el.querySelector('.msn-header');
+  let offsetX = 0, offsetY = 0, isDown = false;
+
+  header.addEventListener('mousedown', (e) => {
+    isDown = true;
+    offsetX = e.clientX - el.offsetLeft;
+    offsetY = e.clientY - el.offsetTop;
+    el.style.zIndex = 1000; // mettre au premier plan
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    el.style.left = (e.clientX - offsetX) + 'px';
+    el.style.top = (e.clientY - offsetY) + 'px';
+  });
+
+  document.addEventListener('mouseup', () => {
+    isDown = false;
+  });
+}
+
   </script>
 </body>
 </html>
