@@ -149,6 +149,12 @@
   color: #ffdddd;
 }
 
+    .timestamp {
+  font-size: 10px;
+  color: #666;
+  margin-top: 2px;
+}
+
     
   </style>
 </head>
@@ -186,9 +192,15 @@
       const input = document.getElementById('input-' + id);
       const msg = input.value.trim();
       if (!msg) return;
+      
       const chat = document.getElementById('chat-' + id);
+      const now = new Date();
+      const time = now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+      
       const div = document.createElement('div');
       div.className = 'message you';
+      div.innerHTML = `<div>${msg}</div><div class="timestamp">${time}</div>`;
+  
       div.innerText = msg;
       chat.appendChild(div);
       input.value = '';
