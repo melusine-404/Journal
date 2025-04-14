@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mélusine</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #fffafc;
+      font-family: "Comic Sans MS", cursive, sans-serif;
+    }
+    #melusine-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 200px;
+      text-align: center;
+      z-index: 9999;
+    }
+    #melusine-img {
+      width: 100%;
+      animation: float 6s ease-in-out infinite;
+    }
+    .bubble {
+      background: #ffe6f0;
+      border: 2px solid #ff99c8;
+      border-radius: 15px;
+      padding: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+      animation: pop 0.6s ease-out;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="melusine-container">
+  <img id="melusine-img" src="melusine.png" alt="Mélusine">
+  <div class="bubble" id="melusine-bubble"></div>
+</div>
+
+<script>
+  const phrases = [
+    "Hey toi, on va écrire un peu ? 😟",
+    "Tu sais que je t'attendais ? Allez, on s'y met.",
+    "T’as pas oublié de respirer au moins ? Parce que moi j’suis prête.",
+    "On papote ou on bosse ? Ou un peu des deux ?",
+    "C’est moi ou t’as une tête à te confier aujourd’hui ?",
+    "Je sens que ça va être une belle entrée de journal…",
+    "Trop contente que tu sois là. Même si t’es là pour te plaindre 😎",
+    "Mood du jour ? Allez vas-y, je te regarde taper."
+  ];
+  const bubble = document.getElementById('melusine-bubble');
+  bubble.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+</script>
+
+</body>
+</html>
