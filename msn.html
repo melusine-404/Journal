@@ -22,7 +22,13 @@ function loadChat(id) {
   const saved = localStorage.getItem('avatar-' + id);
   if (saved) {
     const img = document.getElementById(id);
-    if (img) img.src = saved;
+    if (img) {
+      img.src = saved;
+      img.style.width = '100px';
+      img.style.height = '80px';
+      img.style.objectFit = 'cover';
+      img.style.backgroundColor = 'transparent';
+    }
   }
 }
 
