@@ -5,9 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Journal</title>
   <script>
-    if (localStorage.getItem("access_granted") !== "true") {
-      window.location.href = "login.html";
-    }
+    function saveChat(id) {
+  const chat = document.getElementById('chat-' + id);
+  if (!chat) return;
+  localStorage.setItem('chat-' + id, chat.innerHTML);
+}
+
+function loadChat(id) {
+  const saved = localStorage.getItem('chat-' + id);
+  if (saved) {
+    const chat = document.getElementById('chat-' + id);
+    chat.innerHTML = saved;
+  }
+}
+    function restoreAvatar(id) {
+  const saved = localStorage.getItem('avatar-' + id);
+  if (saved) {
+    const img = document.getElementById(id);
+    if (img) img.src = saved;
+  }
+}
+
+
   </script>
 
   <!-- POLICE -->
@@ -335,6 +354,9 @@
         </div>
       `;
       document.body.appendChild(win);
+      restoreAvatar('bottom-avatar-' + id);
+loadChat(id);
+
       makeDraggable(win);
     };
 
@@ -370,6 +392,7 @@
         reader.onload = function(evt) {
           const img = document.getElementById(targetId);
           img.src = evt.target.result;
+          localStorage.setItem('avatar-' + targetId, evt.target.result);
           img.style.width = '100px';
           img.style.height = '80px';
           img.style.objectFit = 'cover';
@@ -400,6 +423,7 @@
           }
           chat.appendChild(div);
           chat.scrollTop = chat.scrollHeight;
+          saveChat(id);
         };
         reader.readAsDataURL(file);
       };
@@ -420,21 +444,29 @@
     function makeDraggable(el) {
       const header = el.querySelector('.msn-header');
       let offsetX = 0, offsetY = 0, isDown = false;
+      
       header.addEventListener('mousedown', (e) => {
         isDown = true;
         offsetX = e.clientX - el.offsetLeft;
         offsetY = e.clientY - el.offsetTop;
         el.style.zIndex = 1000;
       });
+      
       document.addEventListener('mousemove', (e) => {
         if (!isDown) return;
         el.style.left = (e.clientX - offsetX) + 'px';
         el.style.top = (e.clientY - offsetY) + 'px';
       });
+      
       document.addEventListener('mouseup', () => {
         isDown = false;
       });
-    }
+      }
+    
+    window.onload = () => {
+    restoreAvatar('top-avatar-journal');
+  };
+    
   </script>
 </body>
 </html>
