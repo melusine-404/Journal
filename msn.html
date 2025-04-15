@@ -31,6 +31,21 @@
       border-bottom: 1px solid #88a;
       padding-bottom: 5px;
       margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .top-avatar-wrapper {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .top-avatar-wrapper img {
+      width: 100px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      background-color: transparent;
+      cursor: pointer;
     }
 
     .contact {
@@ -73,16 +88,6 @@
       align-items: center;
       justify-content: space-between;
       cursor: move;
-    }
-
-    .profile-top {
-      width: 100px;
-      height: 80px;
-      border-radius: 10px;
-      background-color: transparent;
-      margin-right: 10px;
-      object-fit: cover;
-      flex-shrink: 0;
     }
 
     .chat-area {
@@ -183,6 +188,9 @@
 <body>
   <div class="sidebar">
     <h3>MSN Journal</h3>
+    <div class="top-avatar-wrapper">
+      <img src="" alt="Avatar" id="top-avatar-journal" onclick="uploadImage('top-avatar-journal')" />
+    </div>
     <div class="contact" onclick="openWindow('journal')">Journal</div>
     <div class="contact" onclick="openWindow('reves')">Rêves</div>
     <div class="contact" onclick="openWindow('listes')">Listes</div>
@@ -196,7 +204,6 @@
       win.id = 'win-' + id;
       win.innerHTML = `
         <div class="msn-header">
-          <img class="profile-top" src="" alt="Avatar" id="top-avatar-${id}" onclick="uploadImage('top-avatar-${id}')" />
           <span>${id.toUpperCase()}</span>
           <div class="window-buttons">
             <div class="btn-circle close-btn" onclick="closeWindow('${id}')">×</div>
