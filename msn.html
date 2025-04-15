@@ -122,7 +122,7 @@
       gap: 10px;
     }
 
-    .chat-input textarea {
+    .chat-input [contenteditable] {
       width: calc(100% - 10px);
       height: 50px;
       border-radius: 10px;
@@ -130,13 +130,16 @@
       font-family: Tahoma, sans-serif;
       font-size: 13px;
       border: 1px solid #aaa;
-      resize: none;
+      overflow-y: auto;
+      background: white;
     }
 
-    .icon-bar span {
+    .icon-bar span, .icon-bar button {
       font-size: 18px;
       cursor: pointer;
       padding: 0 5px;
+      background: none;
+      border: none;
     }
 
     .bottom-profile {
@@ -165,18 +168,6 @@
       80% { transform: translate(1px, -1px); }
       100% { transform: translate(-1px, 2px); }
     }
-
-    .formatting-menu {
-      display: flex;
-      gap: 5px;
-      margin: 5px 0 0 45px;
-    }
-
-    .formatting-menu button {
-      font-size: 12px;
-      padding: 2px 6px;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -203,15 +194,12 @@
         </div>
         <div class="chat-area" id="chat-${id}"></div>
         <div class="chat-input">
-          <textarea id="input-${id}" onkeydown="handleKeyPress(event, '${id}')"></textarea>
-          <div class="formatting-menu">
-            <button onclick="formatText('${id}', 'bold')"><strong>G</strong></button>
-            <button onclick="formatText('${id}', 'italic')"><em>I</em></button>
-          </div>
+          <div contenteditable="true" id="input-${id}" onkeydown="handleKeyPress(event, '${id}')"></div>
           <div class="chat-controls">
             <img class="bottom-profile" src="" alt="Moi" id="bottom-avatar-${id}" onclick="uploadImage('bottom-avatar-${id}')" />
             <div class="icon-bar">
-              <span>🎨</span>
+              <button onclick="execCommand('${id}', 'bold')"><strong>G</strong></button>
+              <button onclick="execCommand('${id}', 'italic')"><em>I</em></button>
               <span onclick="uploadAttachment('${id}')">📎</span>
               <span onclick="wizz('${id}')">🫀</span>
             </div>
@@ -224,7 +212,7 @@
 
     function sendMessage(id) {
       const input = document.getElementById('input-' + id);
-      const msg = input.value.trim();
+      const msg = input.innerHTML.trim();
       if (!msg) return;
 
       const chat = document.getElementById('chat-' + id);
@@ -236,7 +224,7 @@
       div.innerHTML = `<div>${msg}</div><div class="timestamp">${time}</div>`;
 
       chat.appendChild(div);
-      input.value = '';
+      input.innerHTML = '';
       chat.scrollTop = chat.scrollHeight;
     }
 
@@ -247,25 +235,16 @@
       }
     }
 
+    function execCommand(id, command) {
+      const input = document.getElementById('input-' + id);
+      input.focus();
+      document.execCommand(command, false, null);
+    }
+
     function wizz(id) {
       const win = document.getElementById('win-' + id);
       win.classList.add('shake');
       setTimeout(() => win.classList.remove('shake'), 1000);
-    }
-
-    function formatText(id, type) {
-      const textarea = document.getElementById('input-' + id);
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      const selectedText = textarea.value.substring(start, end);
-
-      let tag;
-      if (type === 'bold') tag = 'strong';
-      else if (type === 'italic') tag = 'em';
-      else return;
-
-      const newText = textarea.value.substring(0, start) + `<${tag}>` + selectedText + `</${tag}>` + textarea.value.substring(end);
-      textarea.value = newText;
     }
 
     function uploadImage(targetId) {
