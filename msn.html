@@ -238,7 +238,9 @@
     function execCommand(id, command) {
       const input = document.getElementById('input-' + id);
       input.focus();
-      document.execCommand(command, false, null);
+      setTimeout(() => {
+        document.execCommand(command, false, null);
+      }, 1);
     }
 
     function wizz(id) {
@@ -321,4 +323,3 @@
   </script>
 </body>
 </html>
-
