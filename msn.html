@@ -179,22 +179,6 @@
   </div>
 
   <script>
-    let savedSelection;
-
-      const sel = window.getSelection();
-      if (sel.rangeCount > 0) {
-        savedSelection = sel.getRangeAt(0);
-      }
-    }
-
-    function restoreSelection() {
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      if (savedSelection) {
-        sel.addRange(savedSelection);
-      }
-    }
-
     const openWindow = (id) => {
       if (document.getElementById('win-' + id)) return;
       const win = document.createElement('div');
@@ -211,8 +195,7 @@
         <div class="chat-area" id="chat-${id}"></div>
         <div class="chat-input">
           <div contenteditable="true" id="input-${id}"
-               onkeydown="handleKeyPress(event, '${id}')"
-               onmouseup="saveSelection()" onkeyup="saveSelection()"></div>
+               onkeydown="handleKeyPress(event, '${id}')"></div>
           <div class="chat-controls">
             <img class="bottom-profile" src="" alt="Moi" id="bottom-avatar-${id}" onclick="uploadImage('bottom-avatar-${id}')" />
             <div class="icon-bar">
@@ -229,7 +212,7 @@
     };
 
     function execCommand(id, command) {
-  document.execCommand(command, false, null);
+      document.execCommand(command, false, null);
     }
 
     function sendMessage(id) {
