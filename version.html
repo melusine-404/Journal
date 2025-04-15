@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journal</title>
+  <script>
+    if (localStorage.getItem("access_granted") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <!-- POLICE -->
+  <style>
+    @font-face {
+      font-family: Tahoma, sans-serif;
+    }
+
+    .home-gif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .home-gif img {
+      width: 60px;
+      height: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .home-gif img:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+  </style>
+
+  <!-- STYLE GÉNÉRAL -->
+  <style>
+    body {
+      background: url('assets/icons/accueildessin.jpg') no-repeat center center fixed;
+      background-size: cover;
+      font-family: Tahoma, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3.5em;
+      color: white;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .nav-icons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+      margin-top: 20px;
+    }
+
+    .nav-icons a {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .nav-icons a:hover {
+      transform: scale(1.1) rotate(3deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .nav-icons img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  </style>
+
+  <!-- MSN STYLES (inchangés) -->
+  <style>
+    .sidebar {
+      position: fixed;
+      left: 20px;
+      top: 20px;
+      background: rgba(240, 248, 255, 0.75);
+      backdrop-filter: blur(6px);
+      border: 1px solid #a2c0e0;
+      padding: 15px 10px;
+      width: 220px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 12px;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateX(-20px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    .sidebar h3 {
+      font-size: 18px;
+      color: #d94b8a;
+      border-bottom: 1px solid #88a;
+      padding-bottom: 5px;
+      margin-bottom: 12px;
+      text-align: center;
+      text-shadow: 0 0 3px #88aaff;
+    }
+
+    .top-avatar-wrapper {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .top-avatar-wrapper img {
+      width: 100px;
+      height: 80px;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .contact {
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #d94b8a;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .contact:hover {
+      background: #bcd4fa;
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="home-gif">
+    <img src="assets/icons/home.webp" alt="Accueil">
+  </a>
+
+  <nav class="nav-icons">
+    <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
+      <img src="assets/icons/journal.png" alt="Journal">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/meteo.html" title="Météo">
+      <img src="assets/icons/meteo.png" alt="Météo">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/saisons.html" title="Saisons">
+      <img src="assets/icons/saisons.png" alt="Saisons">
+    </a>
+  </nav>
+
+  <h1>Journal</h1>
+
+  <div class="sidebar">
+    <h3>Test</h3>
+    <div class="top-avatar-wrapper">
+      <img src="" alt="Avatar" id="top-avatar-journal" onclick="uploadImage('top-avatar-journal')" />
+    </div>
+    <div class="contact" onclick="openWindow('journal')">📝 Notes</div>
+    <div class="contact" onclick="openWindow('reves')">🌙 Rêves</div>
+    <div class="contact" onclick="openWindow('listes')">✅ Listes</div>
+  </div>
+
+  <script>
+    function saveChat(id) {
+      const chat = document.getElementById('chat-' + id);
+      const messages = Array.from(chat.children).map(div => div.innerHTML);
+      localStorage.setItem('chat-' + id, JSON.stringify(messages));
+    }
+
+    function restoreChat(id) {
+      const chat = document.getElementById('chat-' + id);
+      const saved = JSON.parse(localStorage.getItem('chat-' + id) || '[]');
+      saved.forEach(html => {
+        const div = document.createElement('div');
+        div.className = 'message you';
+        div.innerHTML = html;
+        chat.appendChild(div);
+      });
+    }
+
+    const openWindow = (id) => {
+      if (document.getElementById('win-' + id)) return;
+      const win = document.createElement('div');
+      win.className = 'msn-window';
+      win.id = 'win-' + id;
+
+      const winWidth = 400;
+      const winHeight = 540;
+      const left = (window.innerWidth - winWidth) / 2;
+      const top = (window.innerHeight - winHeight) / 2;
+      win.style.left = `${left}px`;
+      win.style.top = `${top}px`;
+
+      win.innerHTML = `
+        <div class="msn-header">
+          <span>${id.toUpperCase()}</span>
+          <div class="window-buttons">
+            <div class="btn-circle close-btn" onclick="closeWindow('${id}')">×</div>
+          </div>
+        </div>
+        <div class="chat-area" id="chat-${id}"></div>
+        <div class="chat-input">
+          <div class="chat-text-line">
+            <img class="bottom-profile" src="" alt="Moi" id="bottom-avatar-${id}" onclick="uploadImage('bottom-avatar-${id}')" />
+            <div contenteditable="true" id="input-${id}" onkeydown="handleKeyPress(event, '${id}')"></div>
+          </div>
+          <div class="chat-controls">
+            <div class="icon-bar">
+              <span onclick="uploadAttachment('${id}')">📎</span>
+              <span onclick="wizz('${id}')">🫀</span>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(win);
+      makeDraggable(win);
+      restoreChat(id);
+    };
+
+    function handleKeyPress(e, id) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage(id);
+      }
+    }
+
+    function sendMessage(id) {
+      const input = document.getElementById('input-' + id);
+      const msg = input.innerHTML.trim();
+      if (!msg) return;
+      const chat = document.getElementById('chat-' + id);
+      const now = new Date();
+      const time = now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+      const div = document.createElement('div');
+      div.className = 'message you';
+      div.innerHTML = `<div>${msg}</div><div class="timestamp">${time}</div>`;
+      chat.appendChild(div);
+      input.innerHTML = '';
+      chat.scrollTop = chat.scrollHeight;
+      saveChat(id);
+    }
+
+    function uploadImage(targetId) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const img = document.getElementById(targetId);
+          img.src = evt.target.result;
+          img.style.width = '100px';
+          img.style.height = '80px';
+          img.style.objectFit = 'cover';
+          img.style.backgroundColor = 'transparent';
+          localStorage.setItem('img-' + targetId, evt.target.result);
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+
+    window.onload = function () {
+      document.querySelectorAll('img[id^="top-avatar-"]').forEach(img => {
+        const saved = localStorage.getItem('img-' + img.id);
+        if (saved) img.src = saved;
+      });
+    };
+
+    function uploadAttachment(id) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          const chat = document.getElementById('chat-' + id);
+          const now = new Date();
+          const time = now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+          const div = document.createElement('div');
+          div.className = 'message you';
+          if (file.type.startsWith('image/')) {
+            div.innerHTML = `<div><img src="${evt.target.result}" style="max-width:100%; border-radius:6px;"></div><div class="timestamp">${time}</div>`;
+          } else {
+            div.innerHTML = `<div><a href="${evt.target.result}" download="${file.name}">📎 ${file.name}</a></div><div class="timestamp">${time}</div>`;
+          }
+          chat.appendChild(div);
+          chat.scrollTop = chat.scrollHeight;
+          saveChat(id);
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    }
+
+    function wizz(id) {
+      const win = document.getElementById('win-' + id);
+      win.classList.add('shake');
+      setTimeout(() => win.classList.remove('shake'), 1000);
+    }
+
+    function closeWindow(id) {
+      const win = document.getElementById('win-' + id);
+      if (win) win.remove();
+    }
+
+    function makeDraggable(el) {
+      const header = el.querySelector('.msn-header');
+      let offsetX = 0, offsetY = 0, isDown = false;
+      header.addEventListener('mousedown', (e) => {
+        isDown = true;
+        offsetX = e.clientX - el.offsetLeft;
+        offsetY = e.clientY - el.offsetTop;
+        el.style.zIndex = 1000;
+      });
+      document.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        el.style.left = (e.clientX - offsetX) + 'px';
+        el.style.top = (e.clientY - offsetY) + 'px';
+      });
+      document.addEventListener('mouseup', () => {
+        isDown = false;
+      });
+    }
+  </script>
+</body>
+</html>
