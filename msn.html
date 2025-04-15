@@ -198,8 +198,8 @@
           <div class="chat-controls">
             <img class="bottom-profile" src="" alt="Moi" id="bottom-avatar-${id}" onclick="uploadImage('bottom-avatar-${id}')" />
             <div class="icon-bar">
-              <button onclick="execCommand('${id}', 'bold')"><strong>G</strong></button>
-              <button onclick="execCommand('${id}', 'italic')"><em>I</em></button>
+              <button type="button" onclick="execCommand('${id}', 'bold')"><strong>G</strong></button>
+              <button type="button" onclick="execCommand('${id}', 'italic')"><em>I</em></button>
               <span onclick="uploadAttachment('${id}')">📎</span>
               <span onclick="wizz('${id}')">🫀</span>
             </div>
@@ -238,9 +238,7 @@
     function execCommand(id, command) {
       const input = document.getElementById('input-' + id);
       input.focus();
-      setTimeout(() => {
-        document.execCommand(command, false, null);
-      }, 1);
+      document.execCommand(command, false, null);
     }
 
     function wizz(id) {
@@ -323,3 +321,4 @@
   </script>
 </body>
 </html>
+
