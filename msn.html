@@ -181,7 +181,6 @@
   <script>
     let savedSelection;
 
-    function saveSelection() {
       const sel = window.getSelection();
       if (sel.rangeCount > 0) {
         savedSelection = sel.getRangeAt(0);
@@ -217,8 +216,8 @@
           <div class="chat-controls">
             <img class="bottom-profile" src="" alt="Moi" id="bottom-avatar-${id}" onclick="uploadImage('bottom-avatar-${id}')" />
             <div class="icon-bar">
-              <button type="button" onclick="execCommand('${id}', 'bold')"><strong>G</strong></button>
-              <button type="button" onclick="execCommand('${id}', 'italic')"><em>I</em></button>
+              <button type="button" onmousedown="execCommand('${id}', 'bold')"><strong>G</strong></button>
+              <button type="button" onmousedown="execCommand('${id}', 'italic')"><em>I</em></button>
               <span onclick="uploadAttachment('${id}')">📎</span>
               <span onclick="wizz('${id}')">🫀</span>
             </div>
@@ -230,10 +229,7 @@
     };
 
     function execCommand(id, command) {
-      const input = document.getElementById('input-' + id);
-      input.focus();
-      restoreSelection();
-      document.execCommand(command, false, null);
+  document.execCommand(command, false, null);
     }
 
     function sendMessage(id) {
