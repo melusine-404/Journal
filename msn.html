@@ -368,6 +368,7 @@ function loadChat(id) {
       `;
       document.body.appendChild(win);
       restoreAvatar('bottom-avatar-' + id);
+      document.getElementById('bottom-avatar-' + id).style = 'width: 100px; height: 80px; object-fit: cover; background-color: transparent;';
 loadChat(id);
 
       makeDraggable(win);
@@ -393,6 +394,8 @@ loadChat(id);
       chat.appendChild(div);
       input.innerHTML = '';
       chat.scrollTop = chat.scrollHeight;
+
+      saveChat(id);
     }
 
     function uploadImage(targetId) {
@@ -479,6 +482,18 @@ loadChat(id);
     window.onload = () => {
     restoreAvatar('top-avatar-journal');
   };
+
+    function autoSaveAllChats() {
+  const chatAreas = document.querySelectorAll('.chat-area');
+  chatAreas.forEach(chat => {
+    const id = chat.id.replace('chat-', '');
+    saveChat(id);
+  });
+}
+
+// Lance la sauvegarde automatique toutes les 5 secondes
+setInterval(autoSaveAllChats, 5000);
+
     
   </script>
 </body>
