@@ -8,7 +8,7 @@
     body {
       background: url('https://i.imgur.com/n5dSdKv.jpeg') no-repeat center center fixed;
       background-size: cover;
-      font-family: Tahoma, sans-serif;
+      font-family: 'Courier New', monospace;
       margin: 0;
       padding: 0;
     }
@@ -17,26 +17,34 @@
       position: fixed;
       left: 20px;
       top: 20px;
-      background: linear-gradient(to bottom, #f0f8ff, #d8e8fc);
+      background: rgba(240, 248, 255, 0.75);
+      backdrop-filter: blur(6px);
       border: 1px solid #a2c0e0;
-      padding: 10px;
-      width: 200px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.2);
-      border-radius: 6px;
+      padding: 15px 10px;
+      width: 220px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 12px;
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      0% { opacity: 0; transform: translateX(-20px); }
+      100% { opacity: 1; transform: translateX(0); }
     }
 
     .sidebar h3 {
-      font-size: 16px;
+      font-size: 18px;
       color: #305cab;
       border-bottom: 1px solid #88a;
       padding-bottom: 5px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       text-align: center;
+      text-shadow: 0 0 3px #88aaff;
     }
 
     .top-avatar-wrapper {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
     }
 
     .top-avatar-wrapper img {
@@ -46,18 +54,24 @@
       object-fit: cover;
       background-color: transparent;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     .contact {
-      padding: 6px 8px;
-      border-radius: 4px;
+      padding: 8px 12px;
+      border-radius: 6px;
       cursor: pointer;
       color: #003399;
-      font-size: 13px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
     }
 
     .contact:hover {
-      background: #cde0fa;
+      background: #bcd4fa;
+      transform: translateX(4px);
     }
 
     .msn-window {
@@ -73,19 +87,12 @@
       overflow: hidden;
       z-index: 1;
       resize: both;
-      overflow: auto;
       animation: popup 0.3s ease-out;
     }
 
     @keyframes popup {
-      0% {
-        transform: scale(0.7);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
     }
 
     .msn-header {
@@ -201,9 +208,9 @@
     <div class="top-avatar-wrapper">
       <img src="" alt="Avatar" id="top-avatar-journal" onclick="uploadImage('top-avatar-journal')" />
     </div>
-    <div class="contact" onclick="openWindow('journal')">Journal</div>
-    <div class="contact" onclick="openWindow('reves')">Rêves</div>
-    <div class="contact" onclick="openWindow('listes')">Listes</div>
+    <div class="contact" onclick="openWindow('journal')">📝 Journal</div>
+    <div class="contact" onclick="openWindow('reves')">🌙 Rêves</div>
+    <div class="contact" onclick="openWindow('listes')">✅ Listes</div>
   </div>
 
   <script>
