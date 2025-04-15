@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Animation Rive</title>
+  <script src="https://unpkg.com/@rive-app/webgl"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      font-family: sans-serif;
+    }
+
+    #my-rive {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 120px;
+      height: 120px;
+      cursor: pointer;
+      z-index: 9999;
+      border-radius: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Page de test : Animation Rive</h1>
+
+  <div id="my-rive" title="Clique-moi 💖"></div>
+
+  <script>
+    const riveInstance = new rive.Rive({
+      src: "like_animation.riv", // assure-toi que ce fichier est dans le même dossier
+      canvas: document.createElement("canvas"),
+      autoplay: false,
+      onLoad: () => {
+        document.getElementById("my-rive").appendChild(riveInstance.canvas);
+      }
+    });
+
+    // Rejouer l'animation au clic
+    document.getElementById("my-rive").addEventListener("click", () => {
+      riveInstance.play();
+    });
+  </script>
+</body>
+</html>
