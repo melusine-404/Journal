@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Journal</title>
   <script>
+  if (localStorage.getItem("access_granted") !== "true") {
+    window.location.href = "login.html";
+  }
+</script>
+
+  <script>
     function saveChat(id) {
   const chat = document.getElementById('chat-' + id);
   if (!chat) return;
