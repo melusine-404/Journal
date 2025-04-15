@@ -109,7 +109,7 @@
 
     .chat-input {
       padding: 5px;
-      background-color: #f2f2ff;
+      background-color: transparent;
       border-top: 1px solid #aaa;
       display: flex;
       flex-direction: column;
@@ -123,12 +123,13 @@
     }
 
     .chat-controls .bottom-profile {
-      width: 60px;
-      height: 50px;
+      width: 100px;
+      height: 80px;
       border-radius: 10px;
       object-fit: cover;
       cursor: pointer;
       flex-shrink: 0;
+      background-color: transparent;
     }
 
     .chat-text-line {
@@ -139,7 +140,7 @@
 
     .chat-input [contenteditable] {
       flex-grow: 1;
-      height: 50px;
+      height: 80px;
       border-radius: 10px;
       padding: 8px;
       font-family: Tahoma, sans-serif;
@@ -256,9 +257,10 @@
         reader.onload = function(evt) {
           const img = document.getElementById(targetId);
           img.src = evt.target.result;
-          img.style.width = '60px';
-          img.style.height = '50px';
+          img.style.width = '100px';
+          img.style.height = '80px';
           img.style.objectFit = 'cover';
+          img.style.backgroundColor = 'transparent';
         };
         reader.readAsDataURL(file);
       };
