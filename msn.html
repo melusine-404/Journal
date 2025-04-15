@@ -62,8 +62,6 @@
 
     .msn-window {
       position: absolute;
-      top: 60px;
-      left: 60px;
       width: 400px;
       height: 540px;
       background: #fff;
@@ -76,6 +74,18 @@
       z-index: 1;
       resize: both;
       overflow: auto;
+      animation: popup 0.3s ease-out;
+    }
+
+    @keyframes popup {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .msn-header {
@@ -195,145 +205,5 @@
     <div class="contact" onclick="openWindow('reves')">Rêves</div>
     <div class="contact" onclick="openWindow('listes')">Listes</div>
   </div>
-
-  <script>
-    const openWindow = (id) => {
-      if (document.getElementById('win-' + id)) return;
-      const win = document.createElement('div');
-      win.className = 'msn-window';
-      win.id = 'win-' + id;
-      win.innerHTML = `
-        <div class="msn-header">
-          <span>${id.toUpperCase()}</span>
-          <div class="window-buttons">
-            <div class="btn-circle close-btn" onclick="closeWindow('${id}')">×</div>
-          </div>
-        </div>
-        <div class="chat-area" id="chat-${id}"></div>
-        <div class="chat-input">
-          <div class="chat-text-line">
-            <img class="bottom-profile" src="" alt="Moi" id="bottom-avatar-${id}" onclick="uploadImage('bottom-avatar-${id}')" />
-            <div contenteditable="true" id="input-${id}" onkeydown="handleKeyPress(event, '${id}')"></div>
-          </div>
-          <div class="chat-controls">
-            <div class="icon-bar">
-              <span onclick="uploadAttachment('${id}')">📎</span>
-              <span onclick="wizz('${id}')">🫀</span>
-            </div>
-          </div>
-        </div>
-      `;
-      document.body.appendChild(win);
-      makeDraggable(win);
-    };
-
-    function sendMessage(id) {
-      const input = document.getElementById('input-' + id);
-      const msg = input.innerHTML.trim();
-      if (!msg) return;
-
-      const chat = document.getElementById('chat-' + id);
-      const now = new Date();
-      const time = now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
-
-      const div = document.createElement('div');
-      div.className = 'message you';
-      div.innerHTML = `<div>${msg}</div><div class="timestamp">${time}</div>`;
-
-      chat.appendChild(div);
-      input.innerHTML = '';
-      chat.scrollTop = chat.scrollHeight;
-    }
-
-    function handleKeyPress(e, id) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage(id);
-      }
-    }
-
-    function wizz(id) {
-      const win = document.getElementById('win-' + id);
-      win.classList.add('shake');
-      setTimeout(() => win.classList.remove('shake'), 1000);
-    }
-
-    function uploadImage(targetId) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const img = document.getElementById(targetId);
-          img.src = evt.target.result;
-          img.style.width = '100px';
-          img.style.height = '80px';
-          img.style.objectFit = 'cover';
-          img.style.backgroundColor = 'transparent';
-        };
-        reader.readAsDataURL(file);
-      };
-      input.click();
-    }
-
-    function uploadAttachment(id) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = '*';
-      input.onchange = (e) => {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-
-        reader.onload = function(evt) {
-          const chat = document.getElementById('chat-' + id);
-          const now = new Date();
-          const time = now.toLocaleDateString("fr-FR") + " à " + now.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
-          const div = document.createElement('div');
-          div.className = 'message you';
-
-          if (file.type.startsWith('image/')) {
-            div.innerHTML = `<div><img src="${evt.target.result}" style="max-width:100%; border-radius:6px;"></div><div class="timestamp">${time}</div>`;
-          } else {
-            div.innerHTML = `<div><a href="${evt.target.result}" download="${file.name}">📎 ${file.name}</a></div><div class="timestamp">${time}</div>`;
-          }
-
-          chat.appendChild(div);
-          chat.scrollTop = chat.scrollHeight;
-        };
-
-        reader.readAsDataURL(file);
-      };
-      input.click();
-    }
-
-    function closeWindow(id) {
-      const win = document.getElementById('win-' + id);
-      if (win) win.remove();
-    }
-
-    function makeDraggable(el) {
-      const header = el.querySelector('.msn-header');
-      let offsetX = 0, offsetY = 0, isDown = false;
-
-      header.addEventListener('mousedown', (e) => {
-        isDown = true;
-        offsetX = e.clientX - el.offsetLeft;
-        offsetY = e.clientY - el.offsetTop;
-        el.style.zIndex = 1000;
-      });
-
-      document.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        el.style.left = (e.clientX - offsetX) + 'px';
-        el.style.top = (e.clientY - offsetY) + 'px';
-      });
-
-      document.addEventListener('mouseup', () => {
-        isDown = false;
-      });
-    }
-  </script>
 </body>
 </html>
