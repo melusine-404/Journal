@@ -2,21 +2,90 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Journal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Journal</title>
+  <script>
+    if (localStorage.getItem("access_granted") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+
+  <!-- POLICE -->
   <style>
     @font-face {
-      font-family: Tahoma, sans-serif;
-}
+      font-family: 'Jackal Holiday';
+      src: url('fonts/JackalHoliday.ttf') format('truetype');
+    }
 
+    .home-gif {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .home-gif img {
+      width: 60px;
+      height: auto;
+      transition: transform 0.3s ease;
+    }
+
+    .home-gif img:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+  </style>
+
+  <!-- STYLE GÉNÉRAL -->
+  <style>
     body {
       background: url('assets/icons/accueildessin.jpg') no-repeat center center fixed;
       background-size: cover;
-      font-family: Tahoma, sans-serif;
+      font-family: 'Jackal Holiday', cursive;
       margin: 0;
       padding: 0;
     }
 
+    h1 {
+      text-align: center;
+      font-size: 3.5em;
+      color: white;
+      margin-bottom: 40px;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .nav-icons {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 40px;
+      margin-top: -10px;
+    }
+
+    .nav-icons a {
+      display: inline-block;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .nav-icons a:hover {
+      transform: scale(1.1) rotate(3deg);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+
+    .nav-icons img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+  </style>
+
+  <!-- MSN STYLES (inchangés) -->
+  <style>
     .sidebar {
       position: fixed;
       left: 20px;
@@ -37,7 +106,6 @@
     }
 
     .sidebar h3 {
-      font-family: Tahoma, sans-serif;
       font-size: 18px;
       color: #d94b8a;
       border-bottom: 1px solid #88a;
@@ -57,13 +125,11 @@
       height: 80px;
       border-radius: 10px;
       object-fit: cover;
-      background-color: transparent;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
     .contact {
-      font-family: Tahoma, sans-serif;
       padding: 8px 12px;
       border-radius: 6px;
       cursor: pointer;
@@ -116,7 +182,6 @@
     .chat-area {
       flex-grow: 1;
       padding: 10px;
-      background: #fff;
       overflow-y: auto;
       font-size: 13px;
       line-height: 1.4em;
@@ -132,14 +197,12 @@
     }
 
     .message.msn {
-      font-family: Tahoma, sans-serif;
       text-align: left;
       color: #990099;
     }
 
     .chat-input {
       padding: 5px;
-      background-color: transparent;
       border-top: 1px solid #aaa;
       display: flex;
       flex-direction: column;
@@ -168,7 +231,6 @@
       object-fit: cover;
       cursor: pointer;
       flex-shrink: 0;
-      background-color: transparent;
     }
 
     .chat-input [contenteditable] {
@@ -176,7 +238,6 @@
       height: 80px;
       border-radius: 10px;
       padding: 8px;
-      font-family: Tahoma, sans-serif;
       font-size: 13px;
       border: 1px solid #aaa;
       overflow-y: auto;
@@ -210,8 +271,27 @@
   </style>
 </head>
 <body>
+  <a href="index.html" class="home-gif">
+    <img src="assets/icons/home.webp" alt="Accueil">
+  </a>
+
+  <nav class="nav-icons">
+    <a href="https://melusine-404.github.io/Journal/journal.html" title="Journal">
+      <img src="assets/icons/journal.png" alt="Journal">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/meteo.html" title="Météo">
+      <img src="assets/icons/meteo.png" alt="Météo">
+    </a>
+    <a href="https://melusine-404.github.io/Journal/saisons.html" title="Saisons">
+      <img src="assets/icons/saisons.png" alt="Saisons">
+    </a>
+  </nav>
+
+  <h1>Journal</h1>
+
+  <!-- SIDEBAR MSN -->
   <div class="sidebar">
-    <h3>Journal</h3>
+    <h3>Test</h3>
     <div class="top-avatar-wrapper">
       <img src="" alt="Avatar" id="top-avatar-journal" onclick="uploadImage('top-avatar-journal')" />
     </div>
