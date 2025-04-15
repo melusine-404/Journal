@@ -111,18 +111,20 @@ function loadChat(id) {
   <!-- MSN STYLES (inchangés) -->
   <style>
     .sidebar {
-      position: fixed;
-      left: 20px;
-      top: 20px;
-      background: rgba(240, 248, 255, 0.75);
-      backdrop-filter: blur(6px);
-      border: 1px solid #a2c0e0;
-      padding: 15px 10px;
-      width: 220px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      border-radius: 12px;
-      animation: slideIn 0.5s ease;
-    }
+  position: fixed;
+  left: 60px; /* 🔸 un peu plus à droite (ajuste selon ton goût) */
+  top: 50%; /* 🔸 milieu de la page */
+  transform: translateY(-50%); /* 🔸 pour bien centrer verticalement */
+  background: rgba(240, 248, 255, 0.75);
+  backdrop-filter: blur(6px);
+  border: 1px solid #a2c0e0;
+  padding: 15px 10px;
+  width: 220px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 12px;
+  animation: slideIn 0.5s ease;
+}
+
 
     @keyframes slideIn {
       0% { opacity: 0; transform: translateX(-20px); }
