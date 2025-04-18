@@ -21,18 +21,51 @@
       margin-bottom: 20px;
     }
 
+    .main-container {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .todo-column {
+      width: 200px;
+      background: rgba(255,255,255,0.9);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      height: fit-content;
+    }
+
+    .todo-column h3 {
+      color: #d94b8a;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .todo-column textarea {
+      width: 100%;
+      height: 600px;
+      font-size: 14px;
+      font-family: Tahoma;
+      resize: vertical;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
     .calendar-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 40px;
+      max-width: calc(2 * 320px + 80px);
     }
 
     .month {
       background: rgba(255, 255, 255, 0.9);
       border-radius: 12px;
       padding: 10px;
-      width: 300px;
+      width: 320px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
@@ -50,7 +83,7 @@
     .day {
       border: 1px solid #ccc;
       padding: 5px;
-      height: 100px;
+      height: 130px;
       font-size: 12px;
       background: #f9f9f9;
       border-radius: 5px;
@@ -60,7 +93,7 @@
 
     .day textarea {
       width: 100%;
-      height: 70px;
+      height: 90px;
       font-size: 12px;
       border: none;
       resize: none;
@@ -71,7 +104,13 @@
 </head>
 <body>
   <h1>Mon agenda interactif</h1>
-  <div class="calendar-container" id="calendar"></div>
+  <div class="main-container">
+    <div class="todo-column">
+      <h3>To-Do List Hebdo (lundi)</h3>
+      <textarea id="weekly-todo"></textarea>
+    </div>
+    <div class="calendar-container" id="calendar"></div>
+  </div>
 
   <script>
     const calendar = document.getElementById("calendar");
@@ -111,6 +150,12 @@
 
       monthDiv.appendChild(daysDiv);
       calendar.appendChild(monthDiv);
+    });
+
+    const weeklyTodo = document.getElementById("weekly-todo");
+    weeklyTodo.value = localStorage.getItem("weekly-todo") || "";
+    weeklyTodo.addEventListener("input", () => {
+      localStorage.setItem("weekly-todo", weeklyTodo.value);
     });
   </script>
 </body>
