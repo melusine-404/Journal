@@ -32,7 +32,7 @@
       background: rgba(255, 255, 255, 0.9);
       border-radius: 12px;
       padding: 10px;
-      width: 380px; /* ↗️ plus large pour chaque mois */
+      width: 380px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
@@ -50,17 +50,20 @@
     .day {
       border: 1px solid #ccc;
       padding: 5px;
-      height: 120px;
+      height: 180px; /* 🡺 augmente la hauteur totale */
       font-size: 12px;
       background: #f9f9f9;
       border-radius: 5px;
       overflow: auto;
       cursor: pointer;
+      display: flex;
+      flex-direction: column;
     }
 
     .day textarea {
+      flex-grow: 1;
       width: 100%;
-      height: 85px; /* ↗️ plus haut */
+      height: 100%; /* 🡺 prend toute la hauteur restante */
       font-size: 13px;
       border: none;
       resize: none;
@@ -104,14 +107,4 @@
           localStorage.setItem(key, textarea.value);
         });
 
-        cell.innerHTML = `<strong>${day}</strong><br>`;
-        cell.appendChild(textarea);
-        daysDiv.appendChild(cell);
-      }
-
-      monthDiv.appendChild(daysDiv);
-      calendar.appendChild(monthDiv);
-    });
-  </script>
-</body>
-</html>
+        cell.innerHTML
