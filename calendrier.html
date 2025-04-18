@@ -50,7 +50,7 @@
     .day {
       border: 1px solid #ccc;
       padding: 5px;
-      height: 180px; /* 🡺 augmente la hauteur totale */
+      height: 180px;
       font-size: 12px;
       background: #f9f9f9;
       border-radius: 5px;
@@ -63,7 +63,7 @@
     .day textarea {
       flex-grow: 1;
       width: 100%;
-      height: 100%; /* 🡺 prend toute la hauteur restante */
+      height: 100%;
       font-size: 13px;
       border: none;
       resize: none;
@@ -78,11 +78,17 @@
 
   <script>
     const calendar = document.getElementById("calendar");
-    const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+    const months = [
+      "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre",
+      "Octobre", "Novembre", "Décembre"
+    ];
     const today = new Date();
     const year = today.getFullYear();
+    const startMonthIndex = 3; // Avril = index 3
 
-    months.forEach((monthName, monthIndex) => {
+    months.forEach((monthName, offset) => {
+      const monthIndex = startMonthIndex + offset;
       const monthDiv = document.createElement("div");
       monthDiv.className = "month";
 
@@ -107,4 +113,14 @@
           localStorage.setItem(key, textarea.value);
         });
 
-        cell.innerHTML
+        cell.innerHTML = `<strong>${day}</strong>`;
+        cell.appendChild(textarea);
+        daysDiv.appendChild(cell);
+      }
+
+      monthDiv.appendChild(daysDiv);
+      calendar.appendChild(monthDiv);
+    });
+  </script>
+</body>
+</html>
